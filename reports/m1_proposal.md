@@ -14,8 +14,6 @@ Buying a car is a significant decision that takes multiple factors into account.
 
 ## Section 3: Research questions and usage scenarios
 
--TO DO-
-
 ### Research questions
 
 The following research questions will guide the interactive analysis of this dashboard:
