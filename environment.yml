@@ -1,0 +1,9 @@
+name: vdash
+channels:
+  - conda-forge
+dependencies:
+  - pandas=2.2.1
+  - python=3.11
+  - altair=5.5.0
+  - matplotlib=3.10.0
+  - seaborn=0.13.2
