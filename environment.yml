@@ -1,9 +1,15 @@
+# install with conda env create -f environment.yml
 name: vdash
 channels:
   - conda-forge
 dependencies:
+  - dash=2.18.2
+  - dash-bootstrap-components=1.7.1
   - pandas=2.2.1
+  - pip=25.0.1
   - python=3.11
   - altair=5.5.0
   - matplotlib=3.10.0
   - seaborn=0.13.2
+  - pip:
+      - dash-vega-components
