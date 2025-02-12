@@ -1,12 +1,12 @@
-# vdash
+# VDash: Speed Up Your Car Hunt
 
-A package for doing great things!
+## Summary
 
-## Installation
+- TODO
 
-```bash
-$ pip install vdash
-```
+## Motivation and Purposes
+
+- TODO
 
 ## Usage
 
@@ -18,8 +18,4 @@ Interested in contributing? Check out the contributing guidelines. Please note t
 
 ## License
 
-`vdash` was created by Abeba Nigussie Turi, Alexandra (Yining) Zhou, Archer Liu and Essie Zhang. It is licensed under the terms of the MIT license.
-
-## Credits
-
-`vdash` was created with [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) and the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter).
+`DSCI-532_2025_4_vdash` was created by Abeba Nigussie Turi, Alexandra (Yining) Zhou, Archer Liu and Essie Zhang. It is licensed under the terms of the MIT license.
