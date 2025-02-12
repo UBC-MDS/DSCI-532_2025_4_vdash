@@ -6,7 +6,7 @@
 
 ## Motivation and Purposes
 
-- TODO
+VDash is a user friendly interactive vehicle comparison dashboard customized for buyers in Canada. It is designed to assist users in making informed vehicle purchasing decisions through dynamic data visualization and exploration of the market through visual  aids. The dashboard enables users to filter and compare cars based on multiple attributes such as price, horsepower, battery/engine capacity, speed, fuel type, seating capacity, and car type. By providing an interactive experience, the dashboard allows users to visualize trends, compare specifications across different models, and identify the best options based on their preferences.
 
 ## Usage
 
