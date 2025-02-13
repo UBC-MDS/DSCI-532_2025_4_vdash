@@ -51,21 +51,15 @@ Ready to contribute? Here's how to set up `vdash` for local development.
     $ conda activate vdash
     ```
 
-3. Install `vdash` using `poetry`:
-
-    ```console
-    $ poetry install
-    ```
-
-4. Use `git` (or similar) to create a branch for local development and make your changes:
+3. Use `git` (or similar) to create a branch for local development and make your changes:
 
     ```console
     $ git checkout -b name-of-your-bugfix-or-feature
     ```
 
-5. When you're done making changes, check that your changes conform to any code formatting requirements and pass any tests.
+4. When you're done making changes, check that your changes conform to any code formatting requirements and pass any tests.
 
-6. Commit your changes and open a pull request.
+5. Commit your changes and open a pull request.
 
 ## Pull Request Guidelines
 
