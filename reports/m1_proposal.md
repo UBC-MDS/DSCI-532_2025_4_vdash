@@ -10,7 +10,56 @@ Buying a car is a significant decision that takes multiple factors into account.
 
 ## Section 2: Description of the data
 
--TO DO-
+For this project, we are using the Ultimate Cars Dataset 2024, sourced from Kaggle. This dataset provides detailed specifications of various car models from different manufacturers, including their performance metrics, pricing, and fuel types. Our goal is to leverage this data to create an interactive Car Performance Dashboard that will help car buyers and automotive professionals compare different vehicle models based on key attributes.
+
+### Dataset Overview
+
+- **Total Rows:** 1,213
+- **Total Columns:** 11
+- **Data Source:** [The Ultimate Cars Dataset 2024](https://www.kaggle.com/datasets/abdulmalik1518/the-ultimate-cars-dataset-2024)
+
+### Key Variables for Visualization
+
+We will analyze the following key variables, which are essential for helping car buyers make informed decisions:
+
+1. **Vehicle Specifications:**
+   - `Company Names`: The brand/manufacturer of the vehicle.
+   - `Cars Names`: The model name of the vehicle.
+   - `Engines`: Engine type (e.g., V8, V12, Electric).
+   - `CC/Battery Capacity`: The engine displacement or battery capacity for electric vehicles.
+   - `HorsePower`: The vehicle’s horsepower, a key performance metric.
+   - `Total Speed`: The top speed of the vehicle.
+   - `Performance(0 - 100 KM/H)`: The acceleration time from 0 to 100 km/h.
+   - `Torque`: The amount of torque (Nm) produced by the vehicle.
+
+2. **Pricing and Fuel Information:**
+   - `Cars Prices`: The listed price range (in US dollars) of the vehicle.
+   - `Fuel Types`: The type of fuel used (e.g., Petrol, Electric, Hybrid).
+   - `Seats`: The number of seats in the vehicle.
+
+### Data Engineering and New Variables
+
+To enhance the insights provided by our dashboard, we plan to derive the following new variables:
+
+- Performance-to-Price Ratio: A calculated metric to compare horsepower relative to the price.
+- Vehicle Segmentation: Grouping cars into categories based on their seats and fuel types.
+
+### Justification for Dataset Choice
+
+This dataset is well-suited for our project because it provides a comprehensive and structured collection of vehicle specifications from various manufacturers. By visualizing this data, our Car Performance Dashboard will enable users to:
+
+- Compare car models based on speed, horsepower, and acceleration.
+- Filter vehicles by price, fuel type, and seating capacity to find suitable options.
+- Identify trends in car performance across different manufacturers and price categories.
+
+By integrating dynamic filters and comparisons, our dashboard will simplify the decision-making process for car buyers, while also providing valuable insights for automotive professionals to refine product development and marketing strategies.
+
+
+**Reference:**
+
+Abdulmalik, A. (2024). The Ultimate Cars Dataset 2024 [Data set]. Kaggle. Retrieved from https://www.kaggle.com/datasets/abdulmalik1518/the-ultimate-cars-dataset-2024.
+
+
 
 ## Section 3: Research questions and usage scenarios
 
