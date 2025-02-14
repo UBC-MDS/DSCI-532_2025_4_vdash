@@ -43,4 +43,4 @@ Emily finds that hybrid SUVs provide the best combination of space and fuel effi
 
 ## Section 4: App sketch & brief description
 
--TO DO-
+![Dashboard](../img/sketch.png "App Sketch")
