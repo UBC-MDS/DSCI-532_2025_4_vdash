@@ -49,28 +49,24 @@ Emily finds that hybrid SUVs provide the best combination of space and fuel effi
 
 Our dashboard provides **interactive selectors** for dynamic filtering:
 
-1. **Company Names** – Select one or multiple companies to filter data.
+1. **Company Names** – Filter by one or multiple companies.
 2. **Prices** – Set a price range using a slider.
 3. **Total Speed** – Set a range for maximum speed.
-4. **Fuel Types** – Select cars by fuel type (Petrol, Electric, Hybrid).
+4. **Fuel Types** – Filter by fuel type.
 5. **Seats** – Filter by the number of seats.
-6. (Optional, Feasibility TBD) **Car Types** – Filter by car type (SUV, Sedan, Bus).
+6. (Optional, Feasibility TBD) **Car Types** – Filter by car types.
 
-#### **Additional Feature**
-
-- **Currency Toggle** – Switch between CAD and USD.
+**Currency Toggle** – Switch between CAD and USD.
 
 #### Dashboard Charts
 
 ##### **Part 1: Company Overview**
 
 1. **Bar Chart: Car Model Count by Company**
-   - **Summary**: Static chart of car model counts per company.
    - **X-axis:** Company names
    - **Y-axis:** Car model count
 
 2. **Histogram: Price Distribution for Selected Company**
-   - **Summary**: Price distribution for the selected company.
    - **X-axis:** Price (bins)
    - **Y-axis:** Frequency
 
@@ -83,7 +79,7 @@ Our dashboard provides **interactive selectors** for dynamic filtering:
    - **X-axis Options:** Horsepower, Performance, Total Speed
    - **Y-axis:** Price
    - **Color:** Company
-   - **Interaction:** Toggle X-axis options.
+   - **Interaction:** Toggle X-axis options, with hover tooltips displaying all relavant car specifications.
 
 2. **Box Plot: Price Distribution**
    - **X-axis:** Company, Car Type, Fuel Type
@@ -93,4 +89,4 @@ Our dashboard provides **interactive selectors** for dynamic filtering:
 3. **Box Plot: Horsepower Distribution**
    - **X-axis:** Company, Car Type, Fuel Type
    - **Y-axis:** Horsepower
-   - **Interaction:** Switch between car attributes, with hover tooltips displaying max, min, and median values for easier understanding.
+   - **Interaction:** Same as price box plot.
