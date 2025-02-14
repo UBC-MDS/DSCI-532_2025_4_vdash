@@ -9,8 +9,10 @@ dependencies:
   - pip=25.0.1
   - python=3.11
   - ipykernel=6.29.5
+  - ipywidgets=8.1.5
   - altair=5.5.0
   - matplotlib=3.10.0
   - seaborn=0.13.2
   - pip:
       - dash-vega-components
+      - kagglehub
