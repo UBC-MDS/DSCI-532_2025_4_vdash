@@ -62,9 +62,11 @@ Abdulmalik, A. (2024). The Ultimate Cars Dataset 2024 [Data set]. Kaggle. Retrie
 
 The following research questions will guide the interactive analysis of this dashboard:
 
-- Which manufacturers offer the most car models?
-- How do car prices vary across different manufacturers?
-- How do horsepower, performance, and total speed influence pricing?
+- How do car prices vary across different manufacturers and fuel types?  - to capture price variation by model
+- How is the distribution of battery capacity (for EVs) or engine CC (for fuel cars) across car types? - Captures performance variations
+- What are the top car models by manufacturer? - Captures market concentration
+- How does seating capacity influence price and fuel type choices?  - to capture vehicle size variations
+- How do horsepower, performance, and total speed influence pricing? - Conditional price filters
 - What is the distribution of horsepower and price across different car types and fuel types?
 
 ### Usage Scenario
