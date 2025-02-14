@@ -56,13 +56,13 @@ Our dashboard provides **interactive selectors** for dynamic filtering:
 5. **Seats** – Filter by the number of seats.
 6. (Optional, Feasibility TBD) **Car Types** – Filter by car type (SUV, Sedan, Bus).
 
-#### **Additional Feature**
+#### Additional Feature
 
 - **Currency Toggle** – Switch between CAD and USD.
 
 #### Dashboard Charts
 
-##### **Part 1: Company Overview**
+##### Part 1: Company Overview
 
 1. **Bar Chart: Car Model Count by Company**
    - **Summary**: Static chart of car model counts per company.
@@ -77,7 +77,7 @@ Our dashboard provides **interactive selectors** for dynamic filtering:
 3. **Max Speed and Max Horsepower Display**
    - **Summary**: Displays max speed and horsepower.
 
-##### **Part 2: Detailed Analysis**
+##### Part 2: Detailed Analysis
 
 1. **Scatter Plot: Car Model Comparison**
    - **X-axis Options:** Horsepower, Performance, Total Speed
