@@ -104,4 +104,50 @@ Using the [filter] and [compare] features, Sophia is able to identify which mode
 
 ## Section 4: App sketch & brief description
 
--TO DO-
+![Dashboard](../img/sketch.png "App Sketch")
+
+### Description
+
+Our dashboard provides **interactive selectors** for dynamic filtering:
+
+1. **Company Names** – Filter by one or multiple companies.
+2. **Prices** – Set a price range using a slider.
+3. **Total Speed** – Set a range for maximum speed.
+4. **Fuel Types** – Filter by fuel type.
+5. **Seats** – Filter by the number of seats.
+6. (Optional, Feasibility TBD) **Car Types** – Filter by car types.
+
+**Currency Toggle** – Switch between CAD and USD.
+
+#### Dashboard Charts
+
+##### Part 1: Company Overview
+
+1. **Bar Chart: Car Model Count by Company**
+   - **X-axis:** Company names
+   - **Y-axis:** Car model count
+
+2. **Histogram: Price Distribution for Selected Company**
+   - **X-axis:** Price (bins)
+   - **Y-axis:** Frequency
+
+3. **Max Speed and Max Horsepower Display**
+   - **Summary**: Displays max speed and horsepower.
+
+##### Part 2: Detailed Analysis
+
+1. **Scatter Plot: Car Model Comparison**
+   - **X-axis Options:** Horsepower, Performance, Total Speed
+   - **Y-axis:** Price
+   - **Color:** Company
+   - **Interaction:** Toggle X-axis options, with hover tooltips displaying all relavant car specifications.
+
+2. **Box Plot: Price Distribution**
+   - **X-axis:** Company, Car Type, Fuel Type
+   - **Y-axis:** Price
+   - **Interaction:** Switch between car attributes, with hover tooltips displaying max, min, and median values for easier understanding.
+
+3. **Box Plot: Horsepower Distribution**
+   - **X-axis:** Company, Car Type, Fuel Type
+   - **Y-axis:** Horsepower
+   - **Interaction:** Same as price box plot.
