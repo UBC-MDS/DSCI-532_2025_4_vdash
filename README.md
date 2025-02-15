@@ -2,7 +2,7 @@
 
 ## Summary
 
-- TODO
+Welcome to VDash, a dashboard for car buyers and automotive professionals to compare vehicles! Effortlessly compare vehicles based on performance, pricing, and key features with dynamic filters and interactive visuals.
 
 ## Motivation and Purposes
 
@@ -10,11 +10,33 @@ VDash is a user friendly interactive vehicle comparison dashboard customized for
 
 ## Usage
 
-- TODO
+(A GIF will be added in future milestones to demonstrate usage)
 
 ## Installation
 
-- TODO
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/UBC-MDS/DSCI-532_2025_4_vdash.git
+   ```
+
+2. Navigate to the project directory
+
+   ```bash
+   cd PATH_TO/DSCI-532_2025_4_vdash
+   ```
+
+3. Install dependencies in the virtual environment
+
+   ```bash
+   conda env create -f environment.yml
+   ```
+
+4. Run the dashboard
+
+   ```bash
+   python src/app.py
+   ```
 
 ## Contributing
 
