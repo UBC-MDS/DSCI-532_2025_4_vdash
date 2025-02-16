@@ -26,10 +26,11 @@ VDash is a user friendly interactive vehicle comparison dashboard customized for
    cd PATH_TO/DSCI-532_2025_4_vdash
    ```
 
-3. Install dependencies in the virtual environment
+3. Set up and activate the virtual environment
 
    ```bash
    conda env create -f environment.yml
+   conda activate vdash
    ```
 
 4. Run the dashboard
