@@ -1,12 +1,30 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dash import Dash, html
+from src.components import (
+    currency_switch_btns,
+    overview_company_dropdown,
+    details_company_dropdown,
+    fuel_types_dropdown,
+    price_range_slider,
+    min_price_input,
+    max_price_input,
+    total_speed_range_slider,
+    min_total_speed_input,
+    max_total_speed_input,
+    seats_range_slider,
+    min_seats_input,
+    max_seats_input
+)
 
-# Initiatlize the app
+# Initialize the app
 app = Dash(__name__)
 
 app.layout = html.Div([
     html.Div([
         html.H1("VDash: Speed Up Your Car Hunt"),
-        html.Div("CAD/USD Switcher Placeholder", className='currency-switcher')
+        currency_switch_btns
     ], className='header'),
 
     # Section 1: Company Overview
@@ -14,7 +32,7 @@ app.layout = html.Div([
         html.H2("Company Overview"),
 
         # Filters
-        html.Div("Placeholder for Company Multi-Selector", className='multi-selector'),
+        overview_company_dropdown,
 
         # Visuals
         html.Div("Placeholder for Summary Card", className='summary-card'),
@@ -33,11 +51,29 @@ app.layout = html.Div([
         html.H2("Detailed Analysis"),
 
         # Filters
-        html.Div("Placeholder for Company Multi-Selector", className='multi-selector'),
-        html.Div("Placeholder for Fuel Type Selector", className='multi-selector'),
-        html.Div("Placeholder for Price Range Slider", className='slider'),
-        html.Div("Placeholder for Total Speed Range Slider", className='slider'),
-        html.Div("Placeholder for Seat Number Slider", className='slider'),
+        details_company_dropdown,
+        fuel_types_dropdown,
+        html.Div([
+            price_range_slider,
+            html.Div([
+                min_price_input,
+                max_price_input
+            ], className='input-boxes')
+        ]),
+        html.Div([
+            total_speed_range_slider,
+            html.Div([
+                min_total_speed_input,
+                max_total_speed_input
+            ], className='input-boxes')
+        ]),
+        html.Div([
+            seats_range_slider,
+            html.Div([
+                min_seats_input,
+                max_seats_input
+            ], className='input-boxes')
+        ]),
 
         # Visuals
         html.Div(
@@ -57,5 +93,5 @@ app.layout = html.Div([
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.run(debug=False)
-    server = app.server
+    app.run(debug=True)  # Set to False before deployment
+    # server = app.server  # Uncomment this line for deployment
