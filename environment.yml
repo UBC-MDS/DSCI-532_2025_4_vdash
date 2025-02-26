@@ -13,6 +13,7 @@ dependencies:
   - altair=5.5.0
   - matplotlib=3.10.0
   - seaborn=0.13.2
+  - shiny
   - pip:
       - dash-vega-components
       - kagglehub
