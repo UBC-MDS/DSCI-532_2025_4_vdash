@@ -47,6 +47,15 @@ fuel_types_dropdown = dcc.Dropdown(
     placeholder='Select fuel types...'
 )
 
+# Car type dropdown multi-selector
+car_types_dropdown = dcc.Dropdown(
+    id='car-types-dropdown',
+    options=sorted(cars_df['car_types'].unique()),
+    value=sorted(cars_df['car_types'].dropna().unique()),
+    multi=True,
+    placeholder='Select car types...'
+)
+
 # Price range input boxes (default to CAD)
 min_price_input = dcc.Input(
     id="min-price-input",
@@ -194,6 +203,78 @@ def plot_grouped_histogram(df):
         height=300
     ).configure_axisX(
         labelAngle=0
+    ).to_dict(format="vega")
+
+    return chart
+
+
+# Boxplot: Horsepower distribution with category selection
+def plot_boxplot_horsepower(df, category="company_names"):
+    df = df[df['horsepower'].notna()]
+    if df.empty:
+        return {}
+
+    if category not in df.columns:
+        category = "company_names"
+
+    # Calculate Boxplot statistics
+    summary_df = df.groupby(category).agg(
+        Min=('horsepower', 'min'),
+        Q1=('horsepower', lambda x: x.quantile(0.25)),
+        Median=('horsepower', 'median'),
+        Q3=('horsepower', lambda x: x.quantile(0.75)),
+        Max=('horsepower', 'max')
+    ).reset_index()
+
+    # Whiskers (Min and Max)
+    whiskers = alt.Chart(summary_df).mark_rule().encode(
+        x=alt.X(f'{category}:N', title=category.replace("_", " ").title()),
+        y=alt.Y('Min:Q', title="Horsepower"),
+        y2='Max:Q',
+        tooltip=[
+            alt.Tooltip('Max:Q', title="Max"),
+            alt.Tooltip('Q3:Q', title="75%"),
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip('Q1:Q', title="25%"),
+            alt.Tooltip('Min:Q', title="Min"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Boxplot
+    box = alt.Chart(summary_df).mark_bar(size=20, opacity=0.6).encode(
+        x=alt.X(f'{category}:N'),
+        y=alt.Y('Q1:Q'),
+        y2='Q3:Q',
+        color=alt.Color(f'{category}:N', title=category.replace("_", " ").title()),
+        tooltip=[
+            alt.Tooltip('Max:Q', title="Max"),
+            alt.Tooltip('Q3:Q', title="75%"),
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip('Q1:Q', title="25%"),
+            alt.Tooltip('Min:Q', title="Min"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Median Tick
+    median_tick = alt.Chart(summary_df).mark_tick(
+        color='black',
+        size=40
+    ).encode(
+        x=alt.X(f'{category}:N'),
+        y=alt.Y('Median:Q'),
+        tooltip=[
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Whiskers + Box + Median Tick
+    chart = (whiskers + box + median_tick).properties(
+        title="Horsepower Distribution",
+        width=500,
+        height=300
     ).to_dict(format="vega")
 
     return chart

@@ -8,6 +8,7 @@ from src.components import (
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
+    car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -19,7 +20,8 @@ from src.components import (
     max_seats_input,
     max_speed_horsepower,
     plot_bar_chart,
-    plot_grouped_histogram
+    plot_grouped_histogram,
+    plot_boxplot_horsepower
 )
 
 
@@ -89,3 +91,36 @@ def update_histogram(selected_companies):
         return {}
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_grouped_histogram(filtered_df)
+
+
+@callback(
+    Output('horsepower-boxplot', 'spec'),
+    Input('details-company-dropdown', 'value'),
+    Input('fuel-types-dropdown', 'value'),
+    Input('car-types-dropdown', 'value'),
+    Input('price-range-slider', 'value'),
+    Input('total-speed-range-slider', 'value'),
+    Input('seats-range-slider', 'value'),
+    Input('boxplot-category-radio', 'value')
+)
+def update_horsepower_boxplot(selected_companies, fuel_types, car_types, price_range, speed_range, seats_range, category):
+    if not selected_companies:
+        return alt.Chart(pd.DataFrame()).mark_text(text="No Data Selected").encode().to_dict()
+
+    valid_categories = ["company_names", "car_types", "fuel_types_cleaned"]
+    if category not in valid_categories:
+        category = "company_names"
+
+    filtered_df = cars_df[
+        (cars_df['company_names'].isin(selected_companies)) &
+        (cars_df['fuel_types_cleaned'].isin(fuel_types)) &
+        (cars_df['car_types'].isin(car_types)) &
+        (cars_df['cars_prices_cad'].between(price_range[0], price_range[1])) &
+        (cars_df['total_speed'].between(speed_range[0], speed_range[1])) &
+        (cars_df['seats'].between(seats_range[0], seats_range[1]))
+    ]
+
+    if filtered_df.empty:
+        return alt.Chart(pd.DataFrame()).mark_text(text="No Data Available").encode().to_dict()
+
+    return plot_boxplot_horsepower(filtered_df, category)

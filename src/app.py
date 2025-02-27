@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from dash import Dash, html
+from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 import src.callbacks
@@ -10,6 +10,7 @@ from src.components import (
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
+    car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -50,6 +51,7 @@ app.layout = html.Div([
         # Filters
         details_company_dropdown,
         fuel_types_dropdown,
+        car_types_dropdown,
         html.Div([
             price_range_slider,
             html.Div([
@@ -81,10 +83,20 @@ app.layout = html.Div([
             "Placeholder for Car Price Boxplot",
             className='chart-placeholder'
         ),
-        html.Div(
-            "Placeholder for Horsepower Boxplot",
-            className='chart-placeholder'
-        )
+        html.Div([
+            dcc.RadioItems(
+                id='boxplot-category-radio',
+                options=[
+                    {'label': 'Company', 'value': 'company_names'},
+                    {'label': 'Car type', 'value': 'car_types'},
+                    {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
+                ],
+                value='company_names',
+                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+            ),
+            dvc.Vega(id='horsepower-boxplot') # Horsepower boxplot
+        ])
+
     ], className='detailed-analysis'),
 ])
 
