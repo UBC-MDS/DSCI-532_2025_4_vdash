@@ -1,6 +1,8 @@
 from dash import Input, Output, callback, html
 import sys
 import os
+import altair as alt
+import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.data import cars_df
 from src.components import (
