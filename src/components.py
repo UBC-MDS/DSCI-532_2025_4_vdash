@@ -1,3 +1,5 @@
+import altair as alt
+import pandas as pd
 from dash import html, dcc
 from .data import cars_df
 
@@ -118,3 +120,80 @@ seats_range_slider = dcc.RangeSlider(
     pushable=1,
     tooltip={"placement": "bottom"}
 )
+
+
+# ============ OUTPUTS ============
+
+
+# Card: Max total speed & horsepower within selected companies
+def max_speed_horsepower(df):
+    if df.empty:
+        return None, None
+
+    max_speed = df['total_speed'].max()
+    max_hp = df['horsepower'].max()
+
+    return max_speed, max_hp
+
+
+# Bar chart: number of car models in each company
+def plot_bar_chart(df):
+    chart = alt.Chart(df).mark_bar().encode(
+        x=alt.X('count()', title='Number of Car Models'),
+        y=alt.Y('company_names:N', title='Company'),
+        tooltip=[
+            alt.Tooltip('company_names:N', title='Company'), 
+            alt.Tooltip('count()', title='Count')
+        ]
+    ).properties(
+        title='Number of Car Models in Each Company',
+        width=500,
+        height=300
+    ).interactive().to_dict(format="vega")
+
+    return chart
+
+
+# Histogram: car price range histogram for selected company
+def plot_grouped_histogram(df):
+    price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
+    price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+
+    # Bin the price column into categories
+    df = df.copy()
+    df['Price Range'] = pd.cut(
+        df['cars_prices_cad'],
+        bins=price_bins,
+        labels=price_labels,
+        right=False
+    )
+
+    # Get car names, limiting to 14 entries to prevent tooltip overflow
+    grouped_df = df.groupby(['Price Range', 'company_names']).agg(
+        count=('cars_names', 'count'),
+        cars_names=('cars_names', lambda x: list(x.dropna().astype(str)))
+    ).reset_index()
+
+    grouped_df['cars_names'] = grouped_df['cars_names'].apply(
+        lambda x: ', '.join(x[:14]) + '...' if isinstance(x, list) and len(x) > 14 else ', '.join(x) if isinstance(x, list) else ''
+    )
+
+    chart = alt.Chart(grouped_df).mark_bar().encode(
+        x=alt.X('Price Range:N', title="Price Range", sort=price_labels),
+        y=alt.Y('count:Q', title="Number of Car Models"),
+        color=alt.Color('company_names:N', title="Company"),
+        xOffset='company_names:N',
+        tooltip=[
+            alt.Tooltip('company_names:N', title="Company"),
+            alt.Tooltip('count:Q', title="Car Count"),
+            alt.Tooltip('cars_names:N', title="Car Models")
+        ]
+    ).properties(
+        title="Car Price Range Histogram for Selected Companies",
+        width=500,
+        height=300
+    ).configure_axisX(
+        labelAngle=0
+    ).to_dict(format="vega")
+
+    return chart
