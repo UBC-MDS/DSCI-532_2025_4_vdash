@@ -16,3 +16,4 @@ dependencies:
   - pip:
       - dash-vega-components
       - kagglehub
+      - vl-convert-python=1.7.0

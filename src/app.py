@@ -2,6 +2,9 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dash import Dash, html
+import dash_bootstrap_components as dbc
+import dash_vega_components as dvc
+import src.callbacks
 from src.components import (
     currency_switch_btns,
     overview_company_dropdown,
@@ -35,15 +38,9 @@ app.layout = html.Div([
         overview_company_dropdown,
 
         # Visuals
-        html.Div("Placeholder for Summary Card", className='summary-card'),
-        html.Div(
-            "Placeholder for Number of Car Models in Each Company Bar Chart",
-            className='chart-placeholder'
-        ),
-        html.Div(
-            "Placeholder for Car Price Range Histogram for Selected Company",
-            className='chart-placeholder'
-        )
+        html.Div(id="max-speed-hp-card"),  # Max total speed & horsepower
+        dvc.Vega(id='cars-bar-chart'),  # Bar chart
+        dvc.Vega(id='price-range-histogram')  # Grouped histogram
     ], className='company-overview'),
 
     # Section 2: Detailed Analysis
@@ -94,4 +91,3 @@ app.layout = html.Div([
 # Run the app/dashboard
 if __name__ == '__main__':
     app.run(debug=True)  # Set to False before deployment
-    # server = app.server  # Uncomment this line for deployment
