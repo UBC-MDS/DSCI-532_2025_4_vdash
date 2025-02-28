@@ -1,4 +1,4 @@
-from dash import Input, Output, callback, html
+from dash import Input, Output, callback, html, State, no_update, ctx
 import sys
 import os
 import altair as alt
@@ -23,7 +23,14 @@ from src.components import (
     max_speed_horsepower,
     plot_bar_chart,
     plot_grouped_histogram,
+    plot_boxplot_price,
+    empty_warning_plot,
+    min_price_cad,
+    max_price_cad,
+    min_price_usd,
+    max_price_usd,
     plot_boxplot_horsepower
+
 )
 
 
@@ -201,6 +208,96 @@ def update_histogram(selected_companies, cad_class):
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_grouped_histogram(filtered_df, currency)
 
+@callback(
+    [Output("price-range-slider", "min"),
+     Output("price-range-slider", "max"),
+     Output("price-range-slider", "value"),
+     Output("min-price-input", "value"),
+     Output("max-price-input", "value")],
+    [Input("currency-cad-btn", "n_clicks"), 
+     Input("currency-usd-btn", "n_clicks"),
+     Input("min-price-input", "value"),
+     Input("max-price-input", "value"),
+     Input("price-range-slider", "value")]
+)
+def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, price_range):
+    """
+    Updates the price range slider and input boxes dynamically when currency is switched.
+    Also ensures input box and slider are always synced.
+    """
+    # Determine the selected currency
+    if n_clicks_cad >= n_clicks_usd:
+        min_price, max_price = min_price_cad, max_price_cad
+    else:
+        min_price, max_price = min_price_usd, max_price_usd  # Define these for USD
+
+    # Handle user input
+    if min_price_input is None:
+        min_price_input = price_range[0] if price_range else min_price
+    if max_price_input is None:
+        max_price_input = price_range[1] if price_range else max_price
+
+    triggered_input = ctx.triggered_id
+    if triggered_input == "price-range-slider":
+        min_price_input, max_price_input = price_range
+    elif triggered_input in ["min-price-input", "max-price-input"]:
+        price_range = [min_price_input, max_price_input]
+
+    return min_price, max_price, price_range, min_price_input, max_price_input
+
+
+
+@callback(
+    Output('price-boxplot', 'spec'),
+    [Input("currency-cad-btn", "n_clicks"), 
+    Input("currency-usd-btn", "n_clicks"),
+    Input('details-company-dropdown', 'value'),
+    Input('fuel-types-dropdown', 'value'),
+    # Input('car-types-dropdown', 'value'),
+    Input('price-range-slider', 'value'),
+    Input('min-price-input', 'value'),
+    Input('max-price-input', 'value'),
+    Input('total-speed-range-slider', 'value'),
+    Input('seats-range-slider', 'value'),
+    Input('boxplot-category-radio', 'value')]
+)
+def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
+                         fuel_types, car_types, price_range, min_price, 
+                         max_price, speed_range, seats_range, category):
+    
+    triggered_input = ctx.triggered_id 
+    
+    if n_clicks_cad >= n_clicks_usd:
+        price_col = "cars_prices_cad"
+    else:
+        price_col = "cars_prices_usd"
+
+    if not selected_companies:
+        return empty_warning_plot()
+
+    valid_categories = ["company_names", 
+                        # "car_types", 
+                        "fuel_types_cleaned"]
+    if category not in valid_categories:
+        category = "company_names"
+
+    min_price = min_price if min_price is not None else price_range[0]
+    max_price = max_price if max_price is not None else price_range[1]
+
+    filtered_df = cars_df[
+        (cars_df['company_names'].isin(selected_companies)) &
+        (cars_df['fuel_types_cleaned'].isin(fuel_types)) &
+        # (cars_df['car_types'].isin(car_types)) &
+        (cars_df[price_col].between(min_price, max_price)) &
+        (cars_df['total_speed'].between(speed_range[0], speed_range[1])) &
+        (cars_df['seats'].between(seats_range[0], seats_range[1]))
+    ]
+    if filtered_df.empty:
+        return empty_warning_plot()
+
+    return plot_boxplot_price(filtered_df, category, price_col)
+    
+
   
 @callback(
     Output('horsepower-boxplot', 'spec'),
@@ -234,6 +331,7 @@ def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed
     ]
 
     if filtered_df.empty:
-        return alt.Chart(pd.DataFrame()).mark_text(text="No Data Available").encode().to_dict()
+        return empty_warning_plot()
 
     return plot_boxplot_horsepower(filtered_df, category)
+

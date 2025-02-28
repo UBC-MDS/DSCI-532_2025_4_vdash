@@ -79,10 +79,27 @@ app.layout = html.Div([
             "Placeholder for Horsepower vs. Price Scatter Plot",
             className='chart-placeholder'
         ),
-        html.Div(
-            "Placeholder for Car Price Boxplot",
-            className='chart-placeholder'
-        ),
+#         html.Div(
+#             "Placeholder for Car Price Boxplot",
+#             className='chart-placeholder'
+#         ),
+        html.Div([
+            dcc.RadioItems(
+                id='boxplot-category-radio',
+                options=[
+                    {'label': 'Company', 'value': 'company_names'},
+                    # {'label': 'Car type', 'value': 'car_types'},
+                    {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
+                ],
+                value='company_names',
+                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+            ),
+            dvc.Vega(id='price-boxplot')
+        ]),
+#         html.Div(
+#             "Placeholder for Horsepower Boxplot",
+#             className='chart-placeholder'
+#         )
         html.Div([
             dcc.RadioItems(
                 id='boxplot-category-radio',

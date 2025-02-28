@@ -56,17 +56,24 @@ fuel_types_dropdown = dcc.Dropdown(
 #     placeholder='Select car types...'
 # )
 
+
 # Price range input boxes (default to CAD)
 min_price_input = dcc.Input(
-    id="min-price-input",
-    type="number",
-    value=min_price_cad
+    id="min-price-input", 
+    type="number", 
+    value=min_price_cad,
+    min=min_price_cad, 
+    max=max_price_cad, 
+    step=100
 )
 
 max_price_input = dcc.Input(
-    id="max-price-input",
-    type="number",
-    value=max_price_cad
+    id="max-price-input", 
+    type="number", 
+    value=max_price_cad, 
+    min=min_price_cad, 
+    max=max_price_cad, 
+    step=100
 )
 
 # Price range slider (default to CAD)
@@ -213,6 +220,61 @@ def plot_grouped_histogram(df, currency='CAD'):
 
     return chart
 
+# Boxplot: car price distribution with category selection
+def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
+
+    if df.empty:
+        return empty_warning_plot()
+    
+    if category not in df.columns:
+        category = "company_names"
+
+    if min_price is not None and max_price is not None:
+        df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
+        
+    summary_df = df.groupby(category)[price_col].describe().reset_index()
+    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
+    
+    boxplot = alt.Chart(df).mark_boxplot().encode(
+        x = alt.X(f"{category}:N", 
+                  title="Company",
+                  axis=alt.Axis(labelAngle=-360)),
+        y = alt.Y(f"{price_col}:Q", 
+                  title="price (CAD)" if price_col == "cars_prices_cad" else "price (USD)"),
+        color = alt.Color(f"{category}:N", 
+                          title="Company",
+                          legend=alt.Legend(title=category.replace("_", " ").title()))
+    )
+
+    whisker = alt.Chart(summary_df).mark_rule().encode(
+        x=alt.X(f"{category}:N", title="Company"),
+        y=alt.Y("min:Q"),
+        tooltip=[
+            alt.Tooltip(f"{category}:N", title="Company"), 
+            alt.Tooltip("max:Q", title="Max"),
+            alt.Tooltip("Q3:Q", title="75% (Q3)"),
+            alt.Tooltip("median:Q", title="Median"),
+            alt.Tooltip("Q1:Q", title="25% (Q1)"),
+            alt.Tooltip("min:Q", title="Min")
+        ]
+    )
+
+    price_boxplot = alt.layer(boxplot, whisker).properties(
+        title=f"Box Plot of {price_col.replace('_', ' ')} by {category.replace('_', ' ')}",
+        width=600,
+        height=400
+    ).to_dict(format="vega")
+
+
+    return price_boxplot
+
+# Empty plot: shows when no data avaliable
+def empty_warning_plot():
+    return alt.Chart().mark_text(
+        text="No data available"
+        ).properties(
+            width=600, height=400
+            ).to_dict()
 
 # Boxplot: Horsepower distribution with category selection
 def plot_boxplot_horsepower(df, category="company_names"):
