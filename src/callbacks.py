@@ -1,4 +1,4 @@
-from dash import Input, Output, callback, html, dcc
+from dash import Input, Output, callback, html, State, no_update, ctx
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -97,23 +97,59 @@ def update_histogram(selected_companies):
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_grouped_histogram(filtered_df)
 
+# @callback(
+#     # [Output("price-range-slider", "min"),
+#     #  Output("price-range-slider", "max"),
+#      [Output("price-range-slider", "value"),
+#      Output("min-price-input", "value"),
+#      Output("max-price-input", "value")],
+#     [Input("currency-cad-btn", "n_clicks"), 
+#      Input("currency-usd-btn", "n_clicks"),
+#      Input("min-price-input", "value"),
+#      Input("max-price-input", "value"),
+#      Input("price-range-slider", "value")]
+# )
+# def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, price_range):
+#     """
+#     Updates the price range slider and input boxes dynamically when currency is switched.
+#     Also ensures input box and slider are always synced.
+#     """
+#     # Determine the selected currency
+#     if n_clicks_cad >= n_clicks_usd:
+#         min_price, max_price = min_price_cad, max_price_cad
+#     else:
+#         min_price, max_price = min_price_usd, max_price_usd
+
+#     # Handle user input
+#     if price_range is None:
+#         price_range = [min_price, max_price]
+#     if min_price_input is None:
+#         min_price_input = price_range[0]
+#     if max_price_input is None:
+#         max_price_input = price_range[1]
+
+#     triggered_input = ctx.triggered_id
+#     if triggered_input == "price-range-slider":
+#         min_price_input, max_price_input = price_range
+
+#     elif triggered_input in ["min-price-input", "max-price-input"]:
+#         price_range = [min_price_input, max_price_input]
+
+#     return price_range, min_price_input, max_price_input
+
 @callback(
     [Output("price-range-slider", "min"),
      Output("price-range-slider", "max"),
      Output("price-range-slider", "value"),
      Output("min-price-input", "value"),
-     Output("max-price-input", "value"),
-     Output("min-price-input", "min"),
-     Output("min-price-input", "max"),
-     Output("max-price-input", "min"),
-     Output("max-price-input", "max")],
+     Output("max-price-input", "value")],
     [Input("currency-cad-btn", "n_clicks"), 
      Input("currency-usd-btn", "n_clicks"),
      Input("min-price-input", "value"),
      Input("max-price-input", "value"),
      Input("price-range-slider", "value")]
 )
-def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, slider_range):
+def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, price_range):
     """
     Updates the price range slider and input boxes dynamically when currency is switched.
     Also ensures input box and slider are always synced.
@@ -122,18 +158,22 @@ def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price
     if n_clicks_cad >= n_clicks_usd:
         min_price, max_price = min_price_cad, max_price_cad
     else:
-        min_price, max_price = min_price_usd, max_price_usd
+        min_price, max_price = min_price_usd, max_price_usd  # Define these for USD
 
     # Handle user input
-    min_price_input = min_price if min_price_input is None else max(min_price, min_price_input)
-    max_price_input = max_price if max_price_input is None else min(max_price, max_price_input)
+    if min_price_input is None:
+        min_price_input = price_range[0] if price_range else min_price
+    if max_price_input is None:
+        max_price_input = price_range[1] if price_range else max_price
 
-    # Sync with the range slider
-    slider_min, slider_max = slider_range if slider_range else [min_price, max_price]
+    triggered_input = ctx.triggered_id
+    if triggered_input == "price-range-slider":
+        min_price_input, max_price_input = price_range
+    elif triggered_input in ["min-price-input", "max-price-input"]:
+        price_range = [min_price_input, max_price_input]
 
-    return (min_price, max_price, [slider_min, slider_max],
-            min_price_input, max_price_input,
-            min_price, max_price, min_price, max_price)
+    return min_price, max_price, price_range, min_price_input, max_price_input
+
 
 
 @callback(
@@ -153,6 +193,8 @@ def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price
 def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
                          fuel_types, car_types, price_range, min_price, 
                          max_price, speed_range, seats_range, category):
+    
+    triggered_input = ctx.triggered_id 
     
     if n_clicks_cad >= n_clicks_usd:
         price_col = "cars_prices_cad"
@@ -181,4 +223,4 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
     if filtered_df.empty:
         return empty_warning_plot()
 
-    return plot_boxplot_price(filtered_df, category, price_col, min_price, max_price)
+    return plot_boxplot_price(filtered_df, category, price_col)

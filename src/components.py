@@ -60,11 +60,11 @@ car_types_dropdown = dcc.Dropdown(
 min_price_input = dcc.Input(
     id="min-price-input", 
     type="number", 
-    value=min_price_cad, 
+    value=min_price_cad,
     min=min_price_cad, 
     max=max_price_cad, 
     step=100
-    )
+)
 
 max_price_input = dcc.Input(
     id="max-price-input", 
@@ -73,7 +73,7 @@ max_price_input = dcc.Input(
     min=min_price_cad, 
     max=max_price_cad, 
     step=100
-    )
+)
 
 # Price range slider (default to CAD)
 price_range_slider = dcc.RangeSlider(
@@ -217,18 +217,18 @@ def plot_grouped_histogram(df):
 def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
 
     if df.empty:
-        return alt.Chart().mark_text(text="No data available").properties(width=600, height=400)
+        return empty_warning_plot()
     
     if category not in df.columns:
         category = "company_names"
-    
+
     if min_price is not None and max_price is not None:
         df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
-
+        
     summary_df = df.groupby(category)[price_col].describe().reset_index()
     summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
     
-    boxplot = alt.Chart(df).mark_boxplot(extent="min-max").encode(
+    boxplot = alt.Chart(df).mark_boxplot().encode(
         x = alt.X(f"{category}:N", 
                   title="Company",
                   axis=alt.Axis(labelAngle=-360)),

@@ -19,9 +19,7 @@ from src.components import (
     max_total_speed_input,
     seats_range_slider,
     min_seats_input,
-    max_seats_input,
-    min_price_cad,
-    max_price_cad
+    max_seats_input
 )
 
 # Initialize the app
@@ -60,7 +58,7 @@ app.layout = html.Div([
                 min_price_input,
                 max_price_input
             ], className='input-boxes')
-        ], id="price-controls"),
+        ]),
         html.Div([
             total_speed_range_slider,
             html.Div([
