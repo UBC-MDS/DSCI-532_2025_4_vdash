@@ -8,11 +8,19 @@ from dash.dependencies import Input, Output
 import dash_vega_components as dvc
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+<<<<<<< HEAD
+=======
+from dash import Dash, html, dcc
+import dash_bootstrap_components as dbc
+import dash_vega_components as dvc
+import src.callbacks
+>>>>>>> d65e912a28f4befb8c64ca9a10148055038c5d89
 from src.components import (
     currency_switch_btns,
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
+    # car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -43,15 +51,9 @@ app.layout = html.Div([
         overview_company_dropdown,
 
         # Visuals
-        html.Div("Placeholder for Summary Card", className='summary-card'),
-        html.Div(
-            "Placeholder for Number of Car Models in Each Company Bar Chart",
-            className='chart-placeholder'
-        ),
-        html.Div(
-            "Placeholder for Car Price Range Histogram for Selected Company",
-            className='chart-placeholder'
-        )
+        html.Div(id="max-speed-hp-card"),  # Max total speed & horsepower
+        dvc.Vega(id='cars-bar-chart'),  # Bar chart
+        dvc.Vega(id='price-range-histogram')  # Grouped histogram
     ], className='company-overview'),
 
     # Section 2: Detailed Analysis
@@ -61,6 +63,7 @@ app.layout = html.Div([
         # Filters
         details_company_dropdown,
         fuel_types_dropdown,
+        # car_types_dropdown,
         html.Div([
             price_range_slider,
             html.Div([
@@ -103,14 +106,41 @@ app.layout = html.Div([
             id="scatter-plot", 
             className='chart-placeholder'
         ),
-        html.Div(
-            "Placeholder for Car Price Boxplot",
-            className='chart-placeholder'
-        ),
-        html.Div(
-            "Placeholder for Horsepower Boxplot",
-            className='chart-placeholder'
-        )
+        # html.Div(
+        #     "Placeholder for Car Price Boxplot",
+        #     className='chart-placeholder'
+        # ),
+        html.Div([
+            dcc.RadioItems(
+                id='boxplot-category-radio1',
+                options=[
+                    {'label': 'Company', 'value': 'company_names'},
+                    # {'label': 'Car type', 'value': 'car_types'},
+                    {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
+                ],
+                value='company_names',
+                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+            ),
+            dvc.Vega(id='price-boxplot')
+        ]),
+        # html.Div(
+        #     "Placeholder for Horsepower Boxplot",
+        #     className='chart-placeholder'
+        # ),
+        html.Div([
+            dcc.RadioItems(
+                id='boxplot-category-radio2',
+                options=[
+                    {'label': 'Company', 'value': 'company_names'},
+                    # {'label': 'Car type', 'value': 'car_types'},
+                    {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
+                ],
+                value='company_names',
+                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+            ),
+            dvc.Vega(id='horsepower-boxplot') # Horsepower boxplot
+        ])
+
     ], className='detailed-analysis'),
 ])
 
@@ -179,4 +209,3 @@ def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_r
 # Run the app/dashboard
 if __name__ == '__main__':
     app.run(debug=True)  # Set to False before deployment
-    # server = app.server  # Uncomment this line for deployment
