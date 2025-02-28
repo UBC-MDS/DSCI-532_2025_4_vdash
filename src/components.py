@@ -47,14 +47,14 @@ fuel_types_dropdown = dcc.Dropdown(
     placeholder='Select fuel types...'
 )
 
-# Car type dropdown multi-selector
-car_types_dropdown = dcc.Dropdown(
-    id='car-types-dropdown',
-    options=sorted(cars_df['car_types'].unique()),
-    value=sorted(cars_df['car_types'].dropna().unique()),
-    multi=True,
-    placeholder='Select car types...'
-)
+# # Car type dropdown multi-selector
+# car_types_dropdown = dcc.Dropdown(
+#     id='car-types-dropdown',
+#     options=sorted(cars_df['car_types'].unique()),
+#     value=sorted(cars_df['car_types'].dropna().unique()),
+#     multi=True,
+#     placeholder='Select car types...'
+# )
 
 # Price range input boxes (default to CAD)
 min_price_input = dcc.Input(

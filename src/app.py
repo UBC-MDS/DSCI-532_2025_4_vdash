@@ -10,7 +10,7 @@ from src.components import (
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
-    car_types_dropdown,
+    # car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -51,7 +51,7 @@ app.layout = html.Div([
         # Filters
         details_company_dropdown,
         fuel_types_dropdown,
-        car_types_dropdown,
+        # car_types_dropdown,
         html.Div([
             price_range_slider,
             html.Div([
@@ -88,7 +88,7 @@ app.layout = html.Div([
                 id='boxplot-category-radio',
                 options=[
                     {'label': 'Company', 'value': 'company_names'},
-                    {'label': 'Car type', 'value': 'car_types'},
+                    # {'label': 'Car type', 'value': 'car_types'},
                     {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
                 ],
                 value='company_names',
