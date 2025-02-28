@@ -92,16 +92,20 @@ def sync_price_slider(min_input, max_input):
      Output('max-price-input', 'value', allow_duplicate=True),
      Output('price-range-slider', 'min'),
      Output('price-range-slider', 'max'),
-     Output('price-range-slider', 'value', allow_duplicate=True)],
+     Output('price-range-slider', 'value', allow_duplicate=True),
+     Output('min-price-input', 'min'),
+     Output('min-price-input', 'max'),
+     Output('max-price-input', 'min'),
+     Output('max-price-input', 'max')],
     [Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')],
     prevent_initial_call=True
 )
 def update_price_components(cad_class, usd_class):
     if cad_class == "active-btn":
-        return min_price_cad, max_price_cad, min_price_cad, max_price_cad, [min_price_cad, max_price_cad]
+        return min_price_cad, max_price_cad, min_price_cad, max_price_cad, [min_price_cad, max_price_cad], min_price_cad, max_price_cad, min_price_cad, max_price_cad
     else:
-        return min_price_usd, max_price_usd, min_price_usd, max_price_usd, [min_price_usd, max_price_usd]
+        return min_price_usd, max_price_usd, min_price_usd, max_price_usd, [min_price_usd, max_price_usd], min_price_usd, max_price_usd, min_price_usd, max_price_usd
 
 
 @callback(
