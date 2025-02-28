@@ -26,6 +26,64 @@ from src.components import (
 all_companies = sorted(cars_df['company_names'].unique())
 
 
+# Callback to synchronize sliders and input boxes
+@callback(
+    [Output('min-price-input', 'value'),
+     Output('max-price-input', 'value')],
+    [Input('price-range-slider', 'value')]
+)
+def sync_price_inputs(slider_value):
+    min_price, max_price = slider_value
+    return min_price, max_price
+
+
+@callback(
+    Output('price-range-slider', 'value'),
+    [Input('min-price-input', 'value'),
+     Input('max-price-input', 'value')]
+)
+def sync_price_slider(min_input, max_input):
+    return [min_input, max_input]
+
+
+@callback(
+    [Output('min-total-speed-input', 'value'),
+     Output('max-total-speed-input', 'value')],
+    [Input('total-speed-range-slider', 'value')]
+)
+def sync_speed_inputs(slider_value):
+    min_speed, max_speed = slider_value
+    return min_speed, max_speed
+
+
+@callback(
+    Output('total-speed-range-slider', 'value'),
+    [Input('min-total-speed-input', 'value'),
+     Input('max-total-speed-input', 'value')]
+)
+def sync_speed_slider(min_input, max_input):
+    return [min_input, max_input]
+
+
+@callback(
+    [Output('min-seats-input', 'value'),
+     Output('max-seats-input', 'value')],
+    [Input('seats-range-slider', 'value')]
+)
+def sync_seats_inputs(slider_value):
+    min_seats, max_seats = slider_value
+    return min_seats, max_seats
+
+
+@callback(
+    Output('seats-range-slider', 'value'),
+    [Input('min-seats-input', 'value'),
+     Input('max-seats-input', 'value')]
+)
+def sync_seats_slider(min_input, max_input):
+    return [min_input, max_input]
+
+
 # Company dropdown limit selection to 5
 @callback(
     Output('overview-company-dropdown', 'options'),
@@ -74,7 +132,7 @@ def update_speed_hp_card(selected_companies):
     Input('overview-company-dropdown', 'value')
 )
 def update_bar_chart(selected_companies):
-    if not selected_companies:  
+    if not selected_companies:
         return {}
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_bar_chart(filtered_df)
@@ -85,7 +143,7 @@ def update_bar_chart(selected_companies):
     Input('overview-company-dropdown', 'value')
 )
 def update_histogram(selected_companies):
-    if not selected_companies:  
+    if not selected_companies:
         return {}
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_grouped_histogram(filtered_df)
