@@ -28,6 +28,111 @@ from src.components import (
 
 
 all_companies = sorted(cars_df['company_names'].unique())
+min_price_cad = cars_df['cars_prices_cad'].min()  # 5,400
+max_price_cad = cars_df['cars_prices_cad'].max()  # 24,300,000
+min_price_usd = cars_df['cars_prices_usd'].min()  # 4,000
+max_price_usd = cars_df['cars_prices_usd'].max()  # 18,000,000
+
+
+# Callback to update currency state
+@callback(
+    [Output('currency-cad-btn', 'className'),
+     Output('currency-usd-btn', 'className')],
+    [Input('currency-cad-btn', 'n_clicks'),
+     Input('currency-usd-btn', 'n_clicks')]
+)
+def update_currency_buttons(cad_clicks, usd_clicks):
+    cad_clicks = cad_clicks or 0
+    usd_clicks = usd_clicks or 0
+
+    if cad_clicks == 0 and usd_clicks == 0:
+        return "active-btn", "inactive-btn"
+
+    if cad_clicks >= usd_clicks and usd_clicks == 0:
+        return "active-btn", "inactive-btn"
+    elif usd_clicks >= cad_clicks and cad_clicks == 0:
+        return "inactive-btn", "active-btn"
+    elif cad_clicks > usd_clicks:
+        return "active-btn", "inactive-btn"
+    else:
+        return "inactive-btn", "active-btn"
+
+
+# Callback to synchronize sliders and input boxes
+@callback(
+    [Output('min-price-input', 'value', allow_duplicate=True),
+     Output('max-price-input', 'value', allow_duplicate=True)],
+    [Input('price-range-slider', 'value')],
+    prevent_initial_call=True
+)
+def sync_price_inputs(slider_value):
+    min_price, max_price = slider_value
+    return min_price, max_price
+
+
+@callback(
+    Output('price-range-slider', 'value', allow_duplicate=True),
+    [Input('min-price-input', 'value'),
+     Input('max-price-input', 'value')],
+    prevent_initial_call=True
+)
+def sync_price_slider(min_input, max_input):
+    return [min_input, max_input]
+
+
+@callback(
+    [Output('min-price-input', 'value', allow_duplicate=True),
+     Output('max-price-input', 'value', allow_duplicate=True),
+     Output('price-range-slider', 'min'),
+     Output('price-range-slider', 'max'),
+     Output('price-range-slider', 'value', allow_duplicate=True)],
+    [Input('currency-cad-btn', 'className'),
+     Input('currency-usd-btn', 'className')],
+    prevent_initial_call=True
+)
+def update_price_components(cad_class, usd_class):
+    if cad_class == "active-btn":
+        return min_price_cad, max_price_cad, min_price_cad, max_price_cad, [min_price_cad, max_price_cad]
+    else:
+        return min_price_usd, max_price_usd, min_price_usd, max_price_usd, [min_price_usd, max_price_usd]
+
+
+@callback(
+    [Output('min-total-speed-input', 'value'),
+     Output('max-total-speed-input', 'value')],
+    [Input('total-speed-range-slider', 'value')]
+)
+def sync_speed_inputs(slider_value):
+    min_speed, max_speed = slider_value
+    return min_speed, max_speed
+
+
+@callback(
+    Output('total-speed-range-slider', 'value'),
+    [Input('min-total-speed-input', 'value'),
+     Input('max-total-speed-input', 'value')]
+)
+def sync_speed_slider(min_input, max_input):
+    return [min_input, max_input]
+
+
+@callback(
+    [Output('min-seats-input', 'value'),
+     Output('max-seats-input', 'value')],
+    [Input('seats-range-slider', 'value')]
+)
+def sync_seats_inputs(slider_value):
+    min_seats, max_seats = slider_value
+    return min_seats, max_seats
+
+
+@callback(
+    Output('seats-range-slider', 'value'),
+    [Input('min-seats-input', 'value'),
+     Input('max-seats-input', 'value')]
+)
+def sync_seats_slider(min_input, max_input):
+    return [min_input, max_input]
 
 
 # Company dropdown limit selection to 5
@@ -78,7 +183,7 @@ def update_speed_hp_card(selected_companies):
     Input('overview-company-dropdown', 'value')
 )
 def update_bar_chart(selected_companies):
-    if not selected_companies:  
+    if not selected_companies:
         return {}
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_bar_chart(filtered_df)
@@ -86,15 +191,17 @@ def update_bar_chart(selected_companies):
 
 @callback(
     Output('price-range-histogram', 'spec'),
-    Input('overview-company-dropdown', 'value')
+    [Input('overview-company-dropdown', 'value'),
+     Input('currency-cad-btn', 'className')]
 )
-def update_histogram(selected_companies):
-    if not selected_companies:  
+def update_histogram(selected_companies, cad_class):
+    if not selected_companies:
         return {}
+    currency = 'CAD' if cad_class == "active-btn" else 'USD'
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
-    return plot_grouped_histogram(filtered_df)
+    return plot_grouped_histogram(filtered_df, currency)
 
-
+  
 @callback(
     Output('horsepower-boxplot', 'spec'),
     Input('details-company-dropdown', 'value'),

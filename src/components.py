@@ -164,14 +164,20 @@ def plot_bar_chart(df):
 
 
 # Histogram: car price range histogram for selected company
-def plot_grouped_histogram(df):
-    price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
-    price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+def plot_grouped_histogram(df, currency='CAD'):
+    if currency == 'CAD':
+        price_column = 'cars_prices_cad'
+        price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
+        price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+    else:  # USD
+        price_column = 'cars_prices_usd'
+        price_bins = [0, 15000, 22000, 37000, 60000, 75000, float('inf')]
+        price_labels = ["0-15K", "15-22K", "22-37K", "37-60K", "60-75K", "75K+"]
 
     # Bin the price column into categories
     df = df.copy()
     df['Price Range'] = pd.cut(
-        df['cars_prices_cad'],
+        df[price_column],
         bins=price_bins,
         labels=price_labels,
         right=False
