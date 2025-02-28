@@ -270,6 +270,8 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
   
 @callback(
     Output('horsepower-boxplot', 'spec'),
+    Input("currency-cad-btn", "n_clicks"), 
+    Input("currency-usd-btn", "n_clicks"),
     Input('details-company-dropdown', 'value'),
     Input('fuel-types-dropdown', 'value'),
     # Input('car-types-dropdown', 'value'),
@@ -278,7 +280,7 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
     Input('seats-range-slider', 'value'),
     Input('boxplot-category-radio2', 'value')
 )
-def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed_range, seats_range, category): # add car_types later
+def update_horsepower_boxplot(n_clicks_cad, n_clicks_usd, selected_companies, fuel_types, price_range, speed_range, seats_range, category): # add car_types later
     if not selected_companies:
         return alt.Chart(pd.DataFrame()).mark_text(text="No Data Selected").encode().to_dict()
 
