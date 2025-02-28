@@ -261,8 +261,8 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
 
     price_boxplot = alt.layer(boxplot, whisker).properties(
         title=f"Box Plot of {price_col.replace('_', ' ')} by {category.replace('_', ' ')}",
-        width=600,
-        height=400
+        width=300,
+        height=300
     ).to_dict(format="vega")
 
 
@@ -341,7 +341,7 @@ def plot_boxplot_horsepower(df, category="company_names"):
     # Whiskers + Box + Median Tick
     chart = (whiskers + box + median_tick).properties(
         title="Horsepower Distribution",
-        width=500,
+        width=300,
         height=300
     ).to_dict(format="vega")
 
