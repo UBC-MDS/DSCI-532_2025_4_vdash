@@ -105,9 +105,10 @@ def update_price_components(cad_class, usd_class):
 
 
 @callback(
-    [Output('min-total-speed-input', 'value'),
-     Output('max-total-speed-input', 'value')],
-    [Input('total-speed-range-slider', 'value')]
+    [Output('min-total-speed-input', 'value', allow_duplicate=True),
+     Output('max-total-speed-input', 'value', allow_duplicate=True)],
+    [Input('total-speed-range-slider', 'value')],
+    prevent_initial_call=True
 )
 def sync_speed_inputs(slider_value):
     min_speed, max_speed = slider_value
@@ -124,9 +125,10 @@ def sync_speed_slider(min_input, max_input):
 
 
 @callback(
-    [Output('min-seats-input', 'value'),
-     Output('max-seats-input', 'value')],
-    [Input('seats-range-slider', 'value')]
+    [Output('min-seats-input', 'value', allow_duplicate=True),
+     Output('max-seats-input', 'value', allow_duplicate=True)],
+    [Input('seats-range-slider', 'value')],
+    prevent_initial_call=True
 )
 def sync_seats_inputs(slider_value):
     min_seats, max_seats = slider_value
@@ -208,42 +210,42 @@ def update_histogram(selected_companies, cad_class):
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     return plot_grouped_histogram(filtered_df, currency)
 
-@callback(
-    [Output("price-range-slider", "min"),
-     Output("price-range-slider", "max"),
-     Output("price-range-slider", "value"),
-     Output("min-price-input", "value"),
-     Output("max-price-input", "value")],
-    [Input("currency-cad-btn", "n_clicks"), 
-     Input("currency-usd-btn", "n_clicks"),
-     Input("min-price-input", "value"),
-     Input("max-price-input", "value"),
-     Input("price-range-slider", "value")]
-)
-def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, price_range):
-    """
-    Updates the price range slider and input boxes dynamically when currency is switched.
-    Also ensures input box and slider are always synced.
-    """
-    # Determine the selected currency
-    if n_clicks_cad >= n_clicks_usd:
-        min_price, max_price = min_price_cad, max_price_cad
-    else:
-        min_price, max_price = min_price_usd, max_price_usd  # Define these for USD
+# @callback(
+#     [Output("price-range-slider", "min"),
+#      Output("price-range-slider", "max"),
+#      Output("price-range-slider", "value"),
+#      Output("min-price-input", "value"),
+#      Output("max-price-input", "value")],
+#     [Input("currency-cad-btn", "n_clicks"), 
+#      Input("currency-usd-btn", "n_clicks"),
+#      Input("min-price-input", "value"),
+#      Input("max-price-input", "value"),
+#      Input("price-range-slider", "value")]
+# )
+# def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price_input, price_range):
+#     """
+#     Updates the price range slider and input boxes dynamically when currency is switched.
+#     Also ensures input box and slider are always synced.
+#     """
+#     # Determine the selected currency
+#     if n_clicks_cad >= n_clicks_usd:
+#         min_price, max_price = min_price_cad, max_price_cad
+#     else:
+#         min_price, max_price = min_price_usd, max_price_usd  # Define these for USD
 
-    # Handle user input
-    if min_price_input is None:
-        min_price_input = price_range[0] if price_range else min_price
-    if max_price_input is None:
-        max_price_input = price_range[1] if price_range else max_price
+#     # Handle user input
+#     if min_price_input is None:
+#         min_price_input = price_range[0] if price_range else min_price
+#     if max_price_input is None:
+#         max_price_input = price_range[1] if price_range else max_price
 
-    triggered_input = ctx.triggered_id
-    if triggered_input == "price-range-slider":
-        min_price_input, max_price_input = price_range
-    elif triggered_input in ["min-price-input", "max-price-input"]:
-        price_range = [min_price_input, max_price_input]
+#     triggered_input = ctx.triggered_id
+#     if triggered_input == "price-range-slider":
+#         min_price_input, max_price_input = price_range
+#     elif triggered_input in ["min-price-input", "max-price-input"]:
+#         price_range = [min_price_input, max_price_input]
 
-    return min_price, max_price, price_range, min_price_input, max_price_input
+#     return min_price, max_price, price_range, min_price_input, max_price_input
 
 
 
@@ -259,10 +261,10 @@ def update_price_controls(n_clicks_cad, n_clicks_usd, min_price_input, max_price
     Input('max-price-input', 'value'),
     Input('total-speed-range-slider', 'value'),
     Input('seats-range-slider', 'value'),
-    Input('boxplot-category-radio', 'value')]
+    Input('boxplot-category-radio1', 'value')]
 )
 def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
-                         fuel_types, car_types, price_range, min_price, 
+                         fuel_types, price_range, min_price, 
                          max_price, speed_range, seats_range, category):
     
     triggered_input = ctx.triggered_id 
@@ -307,7 +309,7 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
     Input('price-range-slider', 'value'),
     Input('total-speed-range-slider', 'value'),
     Input('seats-range-slider', 'value'),
-    Input('boxplot-category-radio', 'value')
+    Input('boxplot-category-radio2', 'value')
 )
 def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed_range, seats_range, category): # add car_types later
     if not selected_companies:
