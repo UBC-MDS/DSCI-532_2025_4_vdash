@@ -10,7 +10,7 @@ from src.components import (
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
-    car_types_dropdown,
+    # car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -51,7 +51,7 @@ app.layout = html.Div([
         # Filters
         details_company_dropdown,
         fuel_types_dropdown,
-        car_types_dropdown,
+        # car_types_dropdown,
         html.Div([
             price_range_slider,
             html.Div([
@@ -79,16 +79,16 @@ app.layout = html.Div([
             "Placeholder for Horsepower vs. Price Scatter Plot",
             className='chart-placeholder'
         ),
-        html.Div(
-            "Placeholder for Car Price Boxplot",
-            className='chart-placeholder'
-        ),
+#         html.Div(
+#             "Placeholder for Car Price Boxplot",
+#             className='chart-placeholder'
+#         ),
         html.Div([
             dcc.RadioItems(
                 id='boxplot-category-radio',
                 options=[
                     {'label': 'Company', 'value': 'company_names'},
-                    {'label': 'Car type', 'value': 'car_types'},
+                    # {'label': 'Car type', 'value': 'car_types'},
                     {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
                 ],
                 value='company_names',
@@ -96,10 +96,24 @@ app.layout = html.Div([
             ),
             dvc.Vega(id='price-boxplot')
         ]),
-        html.Div(
-            "Placeholder for Horsepower Boxplot",
-            className='chart-placeholder'
-        )
+#         html.Div(
+#             "Placeholder for Horsepower Boxplot",
+#             className='chart-placeholder'
+#         )
+        html.Div([
+            dcc.RadioItems(
+                id='boxplot-category-radio',
+                options=[
+                    {'label': 'Company', 'value': 'company_names'},
+                    # {'label': 'Car type', 'value': 'car_types'},
+                    {'label': 'Fuel type', 'value': 'fuel_types_cleaned'}
+                ],
+                value='company_names',
+                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+            ),
+            dvc.Vega(id='horsepower-boxplot') # Horsepower boxplot
+        ])
+
     ], className='detailed-analysis'),
 ])
 

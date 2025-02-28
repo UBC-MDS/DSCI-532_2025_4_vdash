@@ -47,14 +47,15 @@ fuel_types_dropdown = dcc.Dropdown(
     placeholder='Select fuel types...'
 )
 
-# Car type dropdown multi-selector
-car_types_dropdown = dcc.Dropdown(
-    id='car-types-dropdown',
-    options=sorted(cars_df['car_types'].unique()),
-    value=sorted(cars_df['car_types'].dropna().unique()),
-    multi=True,
-    placeholder='Select car types...'
-)
+# # Car type dropdown multi-selector
+# car_types_dropdown = dcc.Dropdown(
+#     id='car-types-dropdown',
+#     options=sorted(cars_df['car_types'].unique()),
+#     value=sorted(cars_df['car_types'].dropna().unique()),
+#     multi=True,
+#     placeholder='Select car types...'
+# )
+
 
 # Price range input boxes (default to CAD)
 min_price_input = dcc.Input(
@@ -170,14 +171,20 @@ def plot_bar_chart(df):
 
 
 # Histogram: car price range histogram for selected company
-def plot_grouped_histogram(df):
-    price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
-    price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+def plot_grouped_histogram(df, currency='CAD'):
+    if currency == 'CAD':
+        price_column = 'cars_prices_cad'
+        price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
+        price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+    else:  # USD
+        price_column = 'cars_prices_usd'
+        price_bins = [0, 15000, 22000, 37000, 60000, 75000, float('inf')]
+        price_labels = ["0-15K", "15-22K", "22-37K", "37-60K", "60-75K", "75K+"]
 
     # Bin the price column into categories
     df = df.copy()
     df['Price Range'] = pd.cut(
-        df['cars_prices_cad'],
+        df[price_column],
         bins=price_bins,
         labels=price_labels,
         right=False
@@ -268,3 +275,74 @@ def empty_warning_plot():
         ).properties(
             width=600, height=400
             ).to_dict()
+
+# Boxplot: Horsepower distribution with category selection
+def plot_boxplot_horsepower(df, category="company_names"):
+    df = df[df['horsepower'].notna()]
+    if df.empty:
+        return {}
+
+    if category not in df.columns:
+        category = "company_names"
+
+    # Calculate Boxplot statistics
+    summary_df = df.groupby(category).agg(
+        Min=('horsepower', 'min'),
+        Q1=('horsepower', lambda x: x.quantile(0.25)),
+        Median=('horsepower', 'median'),
+        Q3=('horsepower', lambda x: x.quantile(0.75)),
+        Max=('horsepower', 'max')
+    ).reset_index()
+
+    # Whiskers (Min and Max)
+    whiskers = alt.Chart(summary_df).mark_rule().encode(
+        x=alt.X(f'{category}:N', title=category.replace("_", " ").title()),
+        y=alt.Y('Min:Q', title="Horsepower"),
+        y2='Max:Q',
+        tooltip=[
+            alt.Tooltip('Max:Q', title="Max"),
+            alt.Tooltip('Q3:Q', title="75%"),
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip('Q1:Q', title="25%"),
+            alt.Tooltip('Min:Q', title="Min"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Boxplot
+    box = alt.Chart(summary_df).mark_bar(size=20, opacity=0.6).encode(
+        x=alt.X(f'{category}:N'),
+        y=alt.Y('Q1:Q'),
+        y2='Q3:Q',
+        color=alt.Color(f'{category}:N', title=category.replace("_", " ").title()),
+        tooltip=[
+            alt.Tooltip('Max:Q', title="Max"),
+            alt.Tooltip('Q3:Q', title="75%"),
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip('Q1:Q', title="25%"),
+            alt.Tooltip('Min:Q', title="Min"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Median Tick
+    median_tick = alt.Chart(summary_df).mark_tick(
+        color='black',
+        size=40
+    ).encode(
+        x=alt.X(f'{category}:N'),
+        y=alt.Y('Median:Q'),
+        tooltip=[
+            alt.Tooltip('Median:Q', title="Median"),
+            alt.Tooltip(f'{category}:N', title="Category")
+        ]
+    )
+
+    # Whiskers + Box + Median Tick
+    chart = (whiskers + box + median_tick).properties(
+        title="Horsepower Distribution",
+        width=500,
+        height=300
+    ).to_dict(format="vega")
+
+    return chart
