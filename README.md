@@ -29,7 +29,7 @@ VDash empowers users with interactive tools to explore and compare vehicles effi
 
 ## Usage
 
-![VDash Demo](img/demo.gif)
+[![VDash Demo](img/demo.gif)]
 
 ## Installation
 
