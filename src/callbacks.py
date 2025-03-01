@@ -197,8 +197,10 @@ def update_speed_hp_card(selected_companies):
 )
 def update_bar_chart(selected_companies):
     if not selected_companies:
-        return {}
+        return empty_warning_plot()
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
+    if filtered_df.empty:
+        return empty_warning_plot()
     return plot_bar_chart(filtered_df)
 
 
@@ -209,9 +211,11 @@ def update_bar_chart(selected_companies):
 )
 def update_histogram(selected_companies, cad_class):
     if not selected_companies:
-        return {}
+        return empty_warning_plot()
     currency = 'CAD' if cad_class == "active-btn" else 'USD'
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
+    if filtered_df.empty:
+        return empty_warning_plot()
     return plot_grouped_histogram(filtered_df, currency)
 
 
@@ -229,6 +233,12 @@ def update_histogram(selected_companies, cad_class):
     ]
 )
 def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_range, seat_range, x_var, cad_clicks, usd_clicks):
+    if not selected_companies:
+        return empty_warning_plot()
+
+    if not selected_fuels:
+        return empty_warning_plot()
+
     cad_clicks = cad_clicks or 0
     usd_clicks = usd_clicks or 0
 
@@ -255,6 +265,9 @@ def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_r
     
     if selected_fuels:
         filtered_df = filtered_df[filtered_df["fuel_types_cleaned"].isin(selected_fuels)]
+
+    if filtered_df.empty:
+        return empty_warning_plot()
 
     # Generate Altair scatterplot
     scatter_chart = horsepower_price(filtered_df, x_var, price_col)
@@ -326,11 +339,14 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
 )
 def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed_range, seats_range, category): # add car_types later
     if not selected_companies:
-        return alt.Chart(pd.DataFrame()).mark_text(text="No Data Selected").encode().to_dict()
+        return empty_warning_plot()
+
+    if not fuel_types:
+        return empty_warning_plot()
 
     valid_categories = [
-        "company_names", 
-        # "car_types", 
+        "company_names",
+        # "car_types",
         "fuel_types_cleaned"
     ]
     if category not in valid_categories:
