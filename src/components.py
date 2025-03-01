@@ -47,14 +47,14 @@ fuel_types_dropdown = dcc.Dropdown(
     placeholder='Select fuel types...'
 )
 
-# # Car type dropdown multi-selector
-# car_types_dropdown = dcc.Dropdown(
-#     id='car-types-dropdown',
-#     options=sorted(cars_df['car_types'].unique()),
-#     value=sorted(cars_df['car_types'].dropna().unique()),
-#     multi=True,
-#     placeholder='Select car types...'
-# )
+# Car type dropdown multi-selector
+car_types_dropdown = dcc.Dropdown(
+    id='car-types-dropdown',
+    options=sorted(cars_df['car_types'].unique()),
+    value=sorted(cars_df['car_types'].dropna().unique()),
+    multi=True,
+    placeholder='Select car types...'
+)
 
 
 # Price range input boxes (default to CAD)
@@ -158,33 +158,32 @@ def plot_bar_chart(df):
         x=alt.X('count()', title='Number of Car Models'),
         y=alt.Y('company_names:N', title='Company'),
         tooltip=[
-            alt.Tooltip('company_names:N', title='Company'), 
+            alt.Tooltip('company_names:N', title='Company'),
             alt.Tooltip('count()', title='Count')
         ]
     ).properties(
-        title='Number of Car Models in Each Company',
-        width=500,
-        height=300
+        width=700,
+        height=350
     ).interactive().to_dict(format="vega")
 
     return chart
 
 
 # Histogram: car price range histogram for selected company
-def plot_grouped_histogram(df, currency='CAD'):
+def plot_grouped_histogram(df, price_col, currency='CAD'):
     if currency == 'CAD':
-        price_column = 'cars_prices_cad'
         price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
         price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
+        x_title = "Price Range (CAD)"
     else:  # USD
-        price_column = 'cars_prices_usd'
         price_bins = [0, 15000, 22000, 37000, 60000, 75000, float('inf')]
         price_labels = ["0-15K", "15-22K", "22-37K", "37-60K", "60-75K", "75K+"]
+        x_title = "Price Range (USD)"
 
     # Bin the price column into categories
     df = df.copy()
     df['Price Range'] = pd.cut(
-        df[price_column],
+        df[price_col],
         bins=price_bins,
         labels=price_labels,
         right=False
@@ -201,7 +200,7 @@ def plot_grouped_histogram(df, currency='CAD'):
     )
 
     chart = alt.Chart(grouped_df).mark_bar().encode(
-        x=alt.X('Price Range:N', title="Price Range", sort=price_labels),
+        x=alt.X('Price Range:N', title=x_title, sort=price_labels),
         y=alt.Y('count:Q', title="Number of Car Models"),
         color=alt.Color('company_names:N', title="Company"),
         xOffset='company_names:N',
@@ -211,9 +210,8 @@ def plot_grouped_histogram(df, currency='CAD'):
             alt.Tooltip('cars_names:N', title="Car Models")
         ]
     ).properties(
-        title="Car Price Range Histogram for Selected Companies",
-        width=500,
-        height=300
+        width=700,
+        height=350
     ).configure_axisX(
         labelAngle=0
     ).to_dict(format="vega")
@@ -223,27 +221,52 @@ def plot_grouped_histogram(df, currency='CAD'):
 
 # horsepower_price scatter plot
 def horsepower_price(filtered_df, x_var, price_col):
+    x_max = filtered_df[x_var].max() * 1.05
+    price_max = filtered_df[price_col].max() * 1.05
+
+    x_title_map = {
+        "horsepower": "Horse Power",
+        "performance_0_100_km/h": "Performance (0-100 km/h)",
+        "total_speed": "Total Speed (km/h)"
+    }
+    x_title = x_title_map.get(x_var, "Horse Power")
+    y_title = "Price (CAD)" if price_col == "cars_prices_cad" else "Price (USD)"
+
     chart = (
         alt.Chart(filtered_df)
         .mark_circle(size=80, opacity=0.8)
         .encode(
-            x=alt.X(x_var, title="Horse Power"),
-            y=alt.Y(price_col, title="Price"),
+            x=alt.X(
+                x_var,
+                title=x_title,
+                scale=alt.Scale(
+                    domain=[0, x_max],
+                    nice=True
+                ),
+                axis=alt.Axis(grid=True)
+            ),
+            y=alt.Y(
+                price_col,
+                title=y_title,
+                scale=alt.Scale(
+                    domain=[0, price_max],
+                    nice=True
+                ),
+                axis=alt.Axis(grid=True)
+            ),
             color=alt.Color("company_names", legend=alt.Legend(title="Company")),
             tooltip=[
                 alt.Tooltip("cars_names:N", title="Car Name"),
                 alt.Tooltip("company_names:N", title="Company"),
                 alt.Tooltip("fuel_types_cleaned:N", title="Fuel Type"),
-                alt.Tooltip(price_col, title="Price"),
-                alt.Tooltip(x_var, title="Horse Power"),
+                alt.Tooltip(price_col, title=y_title),
+                alt.Tooltip(x_var, title=x_title),
                 alt.Tooltip("cc_battery_capacity", title="CC/Battery Capacity"),
-                alt.Tooltip("total_speed", title="Total Speed"),
-                alt.Tooltip("performance_0_100_km/h", title="Performance (0-100 KM/H)"),
                 alt.Tooltip("seats", title="Seats"),
                 alt.Tooltip("car_types", title="Car Type"),
             ]
         )
-        .properties(width=500, height=400)
+        .properties(width=300, height=450)
         .interactive()
     )
 
@@ -255,32 +278,38 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
 
     if df.empty:
         return empty_warning_plot()
-    
+
     if category not in df.columns:
         category = "company_names"
 
+    category_labels = {
+        "company_names": "Company",
+        "fuel_types_cleaned": "Fuel Type"
+    }
+    display_name = category_labels.get(category, category.replace("_", " ").title())
+
     if min_price is not None and max_price is not None:
         df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
-        
+
     summary_df = df.groupby(category)[price_col].describe().reset_index()
     summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
-    
+
     boxplot = alt.Chart(df).mark_boxplot().encode(
-        x = alt.X(f"{category}:N", 
-                  title="Company",
-                  axis=alt.Axis(labelAngle=-360)),
-        y = alt.Y(f"{price_col}:Q", 
-                  title="price (CAD)" if price_col == "cars_prices_cad" else "price (USD)"),
-        color = alt.Color(f"{category}:N", 
-                          title="Company",
-                          legend=alt.Legend(title=category.replace("_", " ").title()))
+        x=alt.X(f"{category}:N",
+                title=display_name,
+                axis=alt.Axis(labelAngle=-360)),
+        y=alt.Y(f"{price_col}:Q",
+                title="Price (CAD)" if price_col == "cars_prices_cad" else "Price (USD)"),
+        color=alt.Color(f"{category}:N",
+                        title=display_name,
+                        legend=alt.Legend(title=display_name))
     )
 
     whisker = alt.Chart(summary_df).mark_rule().encode(
-        x=alt.X(f"{category}:N", title="Company"),
+        x=alt.X(f"{category}:N", title=display_name),
         y=alt.Y("min:Q"),
         tooltip=[
-            alt.Tooltip(f"{category}:N", title="Company"), 
+            alt.Tooltip(f"{category}:N", title=display_name),
             alt.Tooltip("max:Q", title="Max"),
             alt.Tooltip("Q3:Q", title="75% (Q3)"),
             alt.Tooltip("median:Q", title="Median"),
@@ -290,31 +319,40 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
     )
 
     price_boxplot = alt.layer(boxplot, whisker).properties(
-        title=f"Box Plot of {price_col.replace('_', ' ')} by {category.replace('_', ' ')}",
         width=300,
-        height=300
+        height=450
     ).to_dict(format="vega")
 
-
     return price_boxplot
+
 
 # Empty plot: shows when no data avaliable
 def empty_warning_plot():
     return alt.Chart().mark_text(
-        text="No data available"
-        ).properties(
-            width=600, height=400
-            ).to_dict()
+        text="No data available",
+        fontSize=14,
+    ).properties(
+        width=300, height=450
+    ).to_dict()
 
 
 # Boxplot: Horsepower distribution with category selection
-def plot_boxplot_horsepower(df, category="company_names"):
+def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
     df = df[df['horsepower'].notna()]
     if df.empty:
-        return {}
+        return empty_warning_plot()
 
     if category not in df.columns:
         category = "company_names"
+
+    category_labels = {
+        "company_names": "Company",
+        "fuel_types_cleaned": "Fuel Type"
+    }
+    display_name = category_labels.get(category, category.replace("_", " ").title())
+
+    if min_price is not None and max_price is not None:
+        df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
 
     # Calculate Boxplot statistics
     summary_df = df.groupby(category).agg(
@@ -327,7 +365,7 @@ def plot_boxplot_horsepower(df, category="company_names"):
 
     # Whiskers (Min and Max)
     whiskers = alt.Chart(summary_df).mark_rule().encode(
-        x=alt.X(f'{category}:N', title=category.replace("_", " ").title()),
+        x=alt.X(f'{category}:N', title=display_name, axis=alt.Axis(labelAngle=-360)),
         y=alt.Y('Min:Q', title="Horsepower"),
         y2='Max:Q',
         tooltip=[
@@ -336,7 +374,7 @@ def plot_boxplot_horsepower(df, category="company_names"):
             alt.Tooltip('Median:Q', title="Median"),
             alt.Tooltip('Q1:Q', title="25%"),
             alt.Tooltip('Min:Q', title="Min"),
-            alt.Tooltip(f'{category}:N', title="Category")
+            alt.Tooltip(f'{category}:N', title=display_name)
         ]
     )
 
@@ -345,7 +383,7 @@ def plot_boxplot_horsepower(df, category="company_names"):
         x=alt.X(f'{category}:N'),
         y=alt.Y('Q1:Q'),
         y2='Q3:Q',
-        color=alt.Color(f'{category}:N', title=category.replace("_", " ").title()),
+        color=alt.Color(f'{category}:N', title=display_name, legend=alt.Legend(title=display_name)),
         tooltip=[
             alt.Tooltip('Max:Q', title="Max"),
             alt.Tooltip('Q3:Q', title="75%"),
@@ -365,15 +403,14 @@ def plot_boxplot_horsepower(df, category="company_names"):
         y=alt.Y('Median:Q'),
         tooltip=[
             alt.Tooltip('Median:Q', title="Median"),
-            alt.Tooltip(f'{category}:N', title="Category")
+            alt.Tooltip(f'{category}:N', title=display_name)
         ]
     )
 
     # Whiskers + Box + Median Tick
     chart = (whiskers + box + median_tick).properties(
-        title="Horsepower Distribution",
         width=300,
-        height=300
+        height=450
     ).to_dict(format="vega")
 
     return chart
