@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
@@ -155,7 +156,7 @@ footer = dbc.Container([
             html.A("Car Data Source", href="https://www.kaggle.com/datasets/abdulmalik1518/the-ultimate-cars-dataset-2024", target="_blank"),
             " | ",
             html.A("View Source Code", href="https://github.com/UBC-MDS/DSCI-532_2025_4_vdash", target="_blank"),
-            " | Last Updated: March 1, 2025"
+            " | Last updated: {}".format(datetime.now().strftime('%B %d, %Y'))
         ], className="text-center")
     ])
 ], className="mt-4")
