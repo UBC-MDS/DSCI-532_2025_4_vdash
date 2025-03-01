@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
@@ -144,6 +145,22 @@ horsepower_boxplot_card = dbc.Card([
     ),
 ], body=True, className="p-3")
 
+# FOOTER SECTION
+footer = dbc.Container([
+    html.Div([
+        html.P([
+            "VDash is a powerful dashboard designed for car buyers and automotive professionals, enabling easy comparison of vehicles!"
+        ], className="text-center mb-1"),
+        html.P([
+            "Developed by Abeba Nigussie Turi, Alexandra Zhou, Archer Liu, and Essie Zhang | ",
+            html.A("Car Data Source", href="https://www.kaggle.com/datasets/abdulmalik1518/the-ultimate-cars-dataset-2024", target="_blank"),
+            " | ",
+            html.A("View Source Code", href="https://github.com/UBC-MDS/DSCI-532_2025_4_vdash", target="_blank"),
+            " | Last updated: {}".format(datetime.now().strftime('%B %d, %Y'))
+        ], className="text-center")
+    ])
+], className="mt-4")
+
 # MAIN LAYOUT
 app.layout = dbc.Container([
     header,
@@ -160,6 +177,10 @@ app.layout = dbc.Container([
         dbc.Col(price_boxplot_card, width=3),
         dbc.Col(horsepower_boxplot_card, width=3),
     ], className="g-3"),
+
+    # Footer Section
+    footer
+
 ], fluid=True)
 
 
