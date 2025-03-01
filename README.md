@@ -19,9 +19,10 @@ VDash empowers users with interactive tools to explore and compare vehicles effi
 
 - **Make Data-Driven Decisions**: Gain insights into key vehicle attributes with side-by-side comparisons and interactive visual analytics.
 
-- **Customize Your Search**: Adjust sliders and dropdowns to refine your car search quickly and effectively.
+- **Customize Your Search**: Adjust sliders and dropdowns to refine your car search quickly and effectively. Toggle between CAD & USD pricing to view costs in your preferred currency.
 
 - **Enhance Your Car Buying Experience**: Whether you’re a buyer, seller, or automotive enthusiast, VDash simplifies complex comparisons and helps you make informed purchasing decisions.
+
 
 ## Usage
 
