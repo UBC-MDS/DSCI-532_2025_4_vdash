@@ -79,6 +79,21 @@ app.layout = html.Div([
             "Placeholder for Horsepower vs. Price Scatter Plot",
             className='chart-placeholder'
         ),
+        html.Label("Select attribute to compare against Price:"),
+        dcc.RadioItems(
+            id="scatter-toggle",  
+            options=[
+                {"label": "Horsepower", "value": "horsepower"},
+                {"label": "Performance", "value": "performance_0_100_km/h"},
+                {"label": "Total Speed", "value": "total_speed"},
+            ],
+            value="horsepower",
+            inline=True,
+            className="mt-2 d-flex justify-content-center",
+        ),
+
+        html.Div([dvc.Vega(id="scatter-plot")]),
+        
         # html.Div(
         #     "Placeholder for Car Price Boxplot",
         #     className='chart-placeholder'

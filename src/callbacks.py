@@ -29,8 +29,8 @@ from src.components import (
     max_price_cad,
     min_price_usd,
     max_price_usd,
-    plot_boxplot_horsepower
-
+    plot_boxplot_horsepower,
+    horsepower_price
 )
 
 
@@ -215,6 +215,53 @@ def update_histogram(selected_companies, cad_class):
     return plot_grouped_histogram(filtered_df, currency)
 
 
+@callback(
+    Output("scatter-plot", "spec"),
+    [
+        Input("details-company-dropdown", "value"),  
+        Input("fuel-types-dropdown", "value"),  
+        Input("price-range-slider", "value"),  
+        Input("total-speed-range-slider", "value"),  
+        Input("seats-range-slider", "value"),  
+        Input("scatter-toggle", "value"),
+        Input("currency-cad-btn", "n_clicks"),  # Track CAD button clicks
+        Input("currency-usd-btn", "n_clicks"),  # Track USD button clicks
+    ]
+)
+def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_range, seat_range, x_var, cad_clicks, usd_clicks):
+    cad_clicks = cad_clicks or 0
+    usd_clicks = usd_clicks or 0
+
+    if cad_clicks > usd_clicks:
+        price_col = "cars_prices_cad"
+    else:
+        price_col = "cars_prices_usd"  # Default to USD if no selection
+
+    print(f"Using column: {price_col}")
+
+    if price_col == "cars_prices_usd" and "cars_prices_usd" not in cars_df.columns:
+        USD_TO_CAD = 1.27  
+        cars_df["cars_prices_usd"] = cars_df["cars_prices_cad"] / USD_TO_CAD
+
+    # Apply filters
+    filtered_df = cars_df[
+        (cars_df[price_col] >= price_range[0]) & (cars_df[price_col] <= price_range[1]) &
+        (cars_df["total_speed"] >= speed_range[0]) & (cars_df["total_speed"] <= speed_range[1]) &
+        (cars_df["seats"] >= seat_range[0]) & (cars_df["seats"] <= seat_range[1])
+    ]
+    
+    if selected_companies:
+        filtered_df = filtered_df[filtered_df["company_names"].isin(selected_companies)]
+    
+    if selected_fuels:
+        filtered_df = filtered_df[filtered_df["fuel_types_cleaned"].isin(selected_fuels)]
+
+    # Generate Altair scatterplot
+    scatter_chart = horsepower_price(filtered_df, x_var, price_col)
+
+    # Convert Altair JSON to a Dash-compatible format
+    return scatter_chart.to_dict()
+
 
 @callback(
     Output('price-boxplot', 'spec'),
@@ -265,9 +312,8 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
         return empty_warning_plot()
 
     return plot_boxplot_price(filtered_df, category, price_col)
-    
 
-  
+
 @callback(
     Output('horsepower-boxplot', 'spec'),
     Input('details-company-dropdown', 'value'),
@@ -303,4 +349,3 @@ def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed
         return empty_warning_plot()
 
     return plot_boxplot_horsepower(filtered_df, category)
-

@@ -220,6 +220,36 @@ def plot_grouped_histogram(df, currency='CAD'):
 
     return chart
 
+
+# horsepower_price scatter plot
+def horsepower_price(filtered_df, x_var, price_col):
+    chart = (
+        alt.Chart(filtered_df)
+        .mark_circle(size=80, opacity=0.8)
+        .encode(
+            x=alt.X(x_var, title="Horse Power"),
+            y=alt.Y(price_col, title="Price"),
+            color=alt.Color("company_names", legend=alt.Legend(title="Company")),
+            tooltip=[
+                alt.Tooltip("cars_names:N", title="Car Name"),
+                alt.Tooltip("company_names:N", title="Company"),
+                alt.Tooltip("fuel_types_cleaned:N", title="Fuel Type"),
+                alt.Tooltip(price_col, title="Price"),
+                alt.Tooltip(x_var, title="Horse Power"),
+                alt.Tooltip("cc_battery_capacity", title="CC/Battery Capacity"),
+                alt.Tooltip("total_speed", title="Total Speed"),
+                alt.Tooltip("performance_0_100_km/h", title="Performance (0-100 KM/H)"),
+                alt.Tooltip("seats", title="Seats"),
+                alt.Tooltip("car_types", title="Car Type"),
+            ]
+        )
+        .properties(width=500, height=400)
+        .interactive()
+    )
+
+    return chart
+
+
 # Boxplot: car price distribution with category selection
 def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
 
@@ -275,6 +305,7 @@ def empty_warning_plot():
         ).properties(
             width=600, height=400
             ).to_dict()
+
 
 # Boxplot: Horsepower distribution with category selection
 def plot_boxplot_horsepower(df, category="company_names"):

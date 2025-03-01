@@ -88,16 +88,19 @@ sidebar = dbc.Card([
 # DETAILED ANALYSIS - CHARTS
 scatter_plot_card = dbc.Card([
     html.H5("Car Model Horsepower vs. Price", className="text-center fw-bold"),
-    dvc.Vega(id="scatter-plot"),
     dcc.RadioItems(
         id="scatter-toggle",
         options=[
             {"label": "Horsepower", "value": "horsepower"},
-            {"label": "Performance", "value": "performance"},
+            {"label": "Performance", "value": "performance_0_100_km/h"},
             {"label": "Total speed", "value": "total_speed"},
         ],
-        value="horsepower", inline=True, className="mt-2 d-flex justify-content-center",
+        value="horsepower",
+        inline=True,
+        className="mt-2 d-flex justify-content-center",
     ),
+
+    dvc.Vega(id="scatter-plot"),
 ], body=True, className="p-3")
 
 price_boxplot_card = dbc.Card([
