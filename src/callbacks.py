@@ -365,3 +365,40 @@ def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed
         return empty_warning_plot()
 
     return plot_boxplot_horsepower(filtered_df, category)
+
+
+@callback(
+    Output("scatter-plot-title", "children"),
+    Input("scatter-toggle", "value")
+)
+def update_scatter_title(toggle_value):
+    title_map = {
+        "horsepower": "Car Model Horsepower vs. Price",
+        "performance_0_100_km/h": "Car Model Performance vs. Price",
+        "total_speed": "Car Model Total Speed vs. Price"
+    }
+    return title_map.get(toggle_value, "Car Model Comparison")
+
+
+@callback(
+    Output("price-boxplot-title", "children"),
+    Input("boxplot-category-radio1", "value")
+)
+def update_price_boxplot_title(category):
+    category_display = {
+        "company_names": "Company",
+        "fuel_types_cleaned": "Fuel Type"
+    }
+    return f"Car Price Distribution by {category_display.get(category, 'Category')}"
+
+
+@callback(
+    Output("horsepower-boxplot-title", "children"),
+    Input("boxplot-category-radio2", "value")
+)
+def update_horsepower_boxplot_title(category):
+    category_display = {
+        "company_names": "Company",
+        "fuel_types_cleaned": "Fuel Type"
+    }
+    return f"Horsepower Distribution by {category_display.get(category, 'Category')}"

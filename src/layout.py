@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
-import src.callbacks  # Ensure callbacks are properly linked
+import src.callbacks
 from src.components import (
     currency_switch_btns,
     overview_company_dropdown,
@@ -44,15 +44,26 @@ company_overview = dbc.Card([
         # Company Dropdown
         overview_company_dropdown,
 
-        dbc.Card(
-            id="max-speed-hp-card",  # 👈 This ensures the callback has a valid target
-            className="metric-box p-3",
-        ),
-
         # Bar Chart & Histogram
         dbc.Row([
-            dbc.Col(dvc.Vega(id='cars-bar-chart'), width=6),
-            dbc.Col(dvc.Vega(id='price-range-histogram'), width=6),
+            dbc.Col([
+                dbc.Card(
+                    id="max-speed-hp-card",
+                    className="metric-box p-3",
+                )
+            ], width=2),
+            dbc.Col([
+                html.Div([
+                    html.H5("Number of Car Models by Company", className="text-center fw-bold"),
+                    dvc.Vega(id='cars-bar-chart')
+                ], style={"textAlign": "center"})
+            ], width=5),
+            dbc.Col([
+                html.Div([
+                    html.H5("Car Price Distribution", className="text-center fw-bold"),
+                    dvc.Vega(id='price-range-histogram')
+                ], style={"textAlign": "center"})
+            ], width=5)
         ])
     ])
 ], className="p-3")
@@ -87,7 +98,8 @@ sidebar = dbc.Card([
 
 # DETAILED ANALYSIS - CHARTS
 scatter_plot_card = dbc.Card([
-    html.H5("Car Model Horsepower vs. Price", className="text-center fw-bold"),
+    html.H5(id="scatter-plot-title", className="text-center fw-bold"),
+    dvc.Vega(id="scatter-plot"),
     dcc.RadioItems(
         id="scatter-toggle",
         options=[
@@ -99,12 +111,10 @@ scatter_plot_card = dbc.Card([
         inline=True,
         className="mt-2 d-flex justify-content-center",
     ),
-
-    dvc.Vega(id="scatter-plot"),
 ], body=True, className="p-3")
 
 price_boxplot_card = dbc.Card([
-    html.H5("Car Price Distribution by Fuel Type", className="text-center fw-bold"),
+    html.H5(id="price-boxplot-title", className="text-center fw-bold"),
     dvc.Vega(id="price-boxplot"),
     dcc.RadioItems(
         id="boxplot-category-radio1",
@@ -117,7 +127,7 @@ price_boxplot_card = dbc.Card([
 ], body=True, className="p-3")
 
 horsepower_boxplot_card = dbc.Card([
-    html.H5("Horsepower Distribution by Company", className="text-center fw-bold"),
+    html.H5(id="horsepower-boxplot-title", className="text-center fw-bold"),
     dvc.Vega(id="horsepower-boxplot"),
     dcc.RadioItems(
         id="boxplot-category-radio2",
