@@ -10,6 +10,7 @@ from src.components import (
     overview_company_dropdown,
     details_company_dropdown,
     fuel_types_dropdown,
+    car_types_dropdown,
     price_range_slider,
     min_price_input,
     max_price_input,
@@ -78,6 +79,9 @@ sidebar = dbc.Card([
 
         html.Label("Select fuel types:", className="fw-bold"),
         fuel_types_dropdown,
+
+        html.Label("Select car types:", className="fw-bold"),
+        car_types_dropdown,
 
         html.Label("Select price range:", className="fw-bold"),
         price_range_slider,
