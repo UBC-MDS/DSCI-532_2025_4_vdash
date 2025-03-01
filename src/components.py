@@ -56,6 +56,7 @@ fuel_types_dropdown = dcc.Dropdown(
 #     placeholder='Select car types...'
 # )
 
+
 # Price range input boxes (default to CAD)
 min_price_input = dcc.Input(
     id="min-price-input", 

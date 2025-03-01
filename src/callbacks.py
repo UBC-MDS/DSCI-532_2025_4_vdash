@@ -31,7 +31,6 @@ from src.components import (
     max_price_usd,
     plot_boxplot_horsepower,
     horsepower_price
-
 )
 
 

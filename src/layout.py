@@ -88,7 +88,6 @@ sidebar = dbc.Card([
 # DETAILED ANALYSIS - CHARTS
 scatter_plot_card = dbc.Card([
     html.H5("Car Model Horsepower vs. Price", className="text-center fw-bold"),
-    
     dcc.RadioItems(
         id="scatter-toggle",
         options=[
@@ -103,7 +102,6 @@ scatter_plot_card = dbc.Card([
 
     dvc.Vega(id="scatter-plot"),
 ], body=True, className="p-3")
-
 
 price_boxplot_card = dbc.Card([
     html.H5("Car Price Distribution by Fuel Type", className="text-center fw-bold"),
