@@ -25,6 +25,7 @@
   - Improved layout organization for better screen space utilization
   - Enhanced filter positioning for more intuitive user interaction
   - Refined chart placement for better visual flow
+  - Added footer for a short description of the app, creators, source links, and the latest update date
 
 ## Known Issues and Bugs
 
@@ -54,7 +55,3 @@
 - Improves user control through refined data filtering.
 - Enhances detailed analysis by enabling easier car type comparisons.
 - Aligns with our goal of providing multiple filtering options for an enriched interactive experience.
-Footer
-
-
-
