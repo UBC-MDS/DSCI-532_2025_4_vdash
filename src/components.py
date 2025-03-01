@@ -158,7 +158,7 @@ def plot_bar_chart(df):
         x=alt.X('count()', title='Number of Car Models'),
         y=alt.Y('company_names:N', title='Company'),
         tooltip=[
-            alt.Tooltip('company_names:N', title='Company'), 
+            alt.Tooltip('company_names:N', title='Company'),
             alt.Tooltip('count()', title='Count')
         ]
     ).properties(
@@ -170,14 +170,12 @@ def plot_bar_chart(df):
 
 
 # Histogram: car price range histogram for selected company
-def plot_grouped_histogram(df, currency='CAD'):
+def plot_grouped_histogram(df, price_col, currency='CAD'):
     if currency == 'CAD':
-        price_column = 'cars_prices_cad'
         price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
         price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
         x_title = "Price Range (CAD)"
     else:  # USD
-        price_column = 'cars_prices_usd'
         price_bins = [0, 15000, 22000, 37000, 60000, 75000, float('inf')]
         price_labels = ["0-15K", "15-22K", "22-37K", "37-60K", "60-75K", "75K+"]
         x_title = "Price Range (USD)"
@@ -185,7 +183,7 @@ def plot_grouped_histogram(df, currency='CAD'):
     # Bin the price column into categories
     df = df.copy()
     df['Price Range'] = pd.cut(
-        df[price_column],
+        df[price_col],
         bins=price_bins,
         labels=price_labels,
         right=False
@@ -339,10 +337,10 @@ def empty_warning_plot():
 
 
 # Boxplot: Horsepower distribution with category selection
-def plot_boxplot_horsepower(df, category="company_names"):
+def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
     df = df[df['horsepower'].notna()]
     if df.empty:
-        return {}
+        return empty_warning_plot()
 
     if category not in df.columns:
         category = "company_names"
@@ -352,6 +350,9 @@ def plot_boxplot_horsepower(df, category="company_names"):
         "fuel_types_cleaned": "Fuel Type"
     }
     display_name = category_labels.get(category, category.replace("_", " ").title())
+
+    if min_price is not None and max_price is not None:
+        df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
 
     # Calculate Boxplot statistics
     summary_df = df.groupby(category).agg(

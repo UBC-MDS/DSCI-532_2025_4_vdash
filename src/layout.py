@@ -82,7 +82,7 @@ sidebar = dbc.Card([
         html.Label("Select price range:", className="fw-bold"),
         price_range_slider,
         html.Div([min_price_input, max_price_input], className="d-flex justify-content-between"),
-        html.P("USD", className="text-muted text-end"),
+        html.P(id="currency-label", className="text-muted text-end"),
 
         html.Label("Select total speed range:", className="fw-bold"),
         total_speed_range_slider,

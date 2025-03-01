@@ -109,6 +109,18 @@ def update_price_components(cad_class, usd_class):
 
 
 @callback(
+    Output('currency-label', 'children'),
+    [Input('currency-cad-btn', 'className'),
+     Input('currency-usd-btn', 'className')]
+)
+def update_currency_label(cad_class, usd_class):
+    if cad_class == "active-btn":
+        return "CAD"
+    else:
+        return "USD"
+
+
+@callback(
     [Output('min-total-speed-input', 'value', allow_duplicate=True),
      Output('max-total-speed-input', 'value', allow_duplicate=True)],
     [Input('total-speed-range-slider', 'value')],
@@ -193,7 +205,7 @@ def update_speed_hp_card(selected_companies):
 
 @callback(
     Output('cars-bar-chart', 'spec'),
-    Input('overview-company-dropdown', 'value')
+    [Input('overview-company-dropdown', 'value')]
 )
 def update_bar_chart(selected_companies):
     if not selected_companies:
@@ -207,51 +219,42 @@ def update_bar_chart(selected_companies):
 @callback(
     Output('price-range-histogram', 'spec'),
     [Input('overview-company-dropdown', 'value'),
-     Input('currency-cad-btn', 'className')]
+     Input('currency-cad-btn', 'className'),
+     Input('currency-usd-btn', 'className')]
 )
-def update_histogram(selected_companies, cad_class):
+def update_histogram(selected_companies, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
     currency = 'CAD' if cad_class == "active-btn" else 'USD'
+    price_col = "cars_prices_cad" if currency == 'CAD' else "cars_prices_usd"
     filtered_df = cars_df[cars_df['company_names'].isin(selected_companies)]
     if filtered_df.empty:
         return empty_warning_plot()
-    return plot_grouped_histogram(filtered_df, currency)
+    return plot_grouped_histogram(filtered_df, price_col, currency)
 
 
 @callback(
     Output("scatter-plot", "spec"),
     [
-        Input("details-company-dropdown", "value"),  
-        Input("fuel-types-dropdown", "value"),  
-        Input("price-range-slider", "value"),  
-        Input("total-speed-range-slider", "value"),  
-        Input("seats-range-slider", "value"),  
+        Input("details-company-dropdown", "value"),
+        Input("fuel-types-dropdown", "value"),
+        Input("price-range-slider", "value"),
+        Input("total-speed-range-slider", "value"),
+        Input("seats-range-slider", "value"),
         Input("scatter-toggle", "value"),
-        Input("currency-cad-btn", "n_clicks"),  # Track CAD button clicks
-        Input("currency-usd-btn", "n_clicks"),  # Track USD button clicks
+        Input("currency-cad-btn", "className"),  # Track CAD button class
+        Input("currency-usd-btn", "className"),  # Track USD button class
     ]
 )
-def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_range, seat_range, x_var, cad_clicks, usd_clicks):
+def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_range, seat_range, x_var, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
 
     if not selected_fuels:
         return empty_warning_plot()
 
-    cad_clicks = cad_clicks or 0
-    usd_clicks = usd_clicks or 0
-
-    if cad_clicks > usd_clicks:
-        price_col = "cars_prices_cad"
-    else:
-        price_col = "cars_prices_usd"  # Default to USD if no selection
-
-    print(f"Using column: {price_col}")
-
-    if price_col == "cars_prices_usd" and "cars_prices_usd" not in cars_df.columns:
-        USD_TO_CAD = 1.27  
-        cars_df["cars_prices_usd"] = cars_df["cars_prices_cad"] / USD_TO_CAD
+    currency = 'CAD' if cad_class == "active-btn" else 'USD'
+    price_col = "cars_prices_cad" if currency == 'CAD' else "cars_prices_usd"
 
     # Apply filters
     filtered_df = cars_df[
@@ -259,10 +262,10 @@ def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_r
         (cars_df["total_speed"] >= speed_range[0]) & (cars_df["total_speed"] <= speed_range[1]) &
         (cars_df["seats"] >= seat_range[0]) & (cars_df["seats"] <= seat_range[1])
     ]
-    
+
     if selected_companies:
         filtered_df = filtered_df[filtered_df["company_names"].isin(selected_companies)]
-    
+
     if selected_fuels:
         filtered_df = filtered_df[filtered_df["fuel_types_cleaned"].isin(selected_fuels)]
 
@@ -278,34 +281,29 @@ def update_scatter_plot(selected_companies, selected_fuels, price_range, speed_r
 
 @callback(
     Output('price-boxplot', 'spec'),
-    [Input("currency-cad-btn", "n_clicks"), 
-    Input("currency-usd-btn", "n_clicks"),
-    Input('details-company-dropdown', 'value'),
-    Input('fuel-types-dropdown', 'value'),
-    # Input('car-types-dropdown', 'value'),
-    Input('price-range-slider', 'value'),
-    Input('min-price-input', 'value'),
-    Input('max-price-input', 'value'),
-    Input('total-speed-range-slider', 'value'),
-    Input('seats-range-slider', 'value'),
-    Input('boxplot-category-radio1', 'value')]
+    [Input("currency-cad-btn", "className"),
+     Input("currency-usd-btn", "className"),
+     Input('details-company-dropdown', 'value'),
+     Input('fuel-types-dropdown', 'value'),
+     # Input('car-types-dropdown', 'value'),
+     Input('price-range-slider', 'value'),
+     Input('min-price-input', 'value'),
+     Input('max-price-input', 'value'),
+     Input('total-speed-range-slider', 'value'),
+     Input('seats-range-slider', 'value'),
+     Input('boxplot-category-radio1', 'value')]
 )
-def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
+def update_price_boxplot(cad_class, usd_class, selected_companies,
                          fuel_types, price_range, min_price, 
                          max_price, speed_range, seats_range, category):
     
-    triggered_input = ctx.triggered_id 
-    
-    if n_clicks_cad >= n_clicks_usd:
-        price_col = "cars_prices_cad"
-    else:
-        price_col = "cars_prices_usd"
+    currency = 'CAD' if cad_class == "active-btn" else 'USD'
+    price_col = "cars_prices_cad" if currency == 'CAD' else "cars_prices_usd"
 
     if not selected_companies:
         return empty_warning_plot()
 
     valid_categories = ["company_names", 
-                        # "car_types", 
                         "fuel_types_cleaned"]
     if category not in valid_categories:
         category = "company_names"
@@ -316,7 +314,6 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
     filtered_df = cars_df[
         (cars_df['company_names'].isin(selected_companies)) &
         (cars_df['fuel_types_cleaned'].isin(fuel_types)) &
-        # (cars_df['car_types'].isin(car_types)) &
         (cars_df[price_col].between(min_price, max_price)) &
         (cars_df['total_speed'].between(speed_range[0], speed_range[1])) &
         (cars_df['seats'].between(seats_range[0], seats_range[1]))
@@ -329,15 +326,18 @@ def update_price_boxplot(n_clicks_cad, n_clicks_usd, selected_companies,
 
 @callback(
     Output('horsepower-boxplot', 'spec'),
-    Input('details-company-dropdown', 'value'),
-    Input('fuel-types-dropdown', 'value'),
-    # Input('car-types-dropdown', 'value'),
-    Input('price-range-slider', 'value'),
-    Input('total-speed-range-slider', 'value'),
-    Input('seats-range-slider', 'value'),
-    Input('boxplot-category-radio2', 'value')
+    [Input('details-company-dropdown', 'value'),
+     Input('fuel-types-dropdown', 'value'),
+     Input('price-range-slider', 'value'),
+     Input('min-price-input', 'value'),
+     Input('max-price-input', 'value'),
+     Input('total-speed-range-slider', 'value'),
+     Input('seats-range-slider', 'value'),
+     Input('boxplot-category-radio2', 'value'),
+     Input('currency-cad-btn', 'className'),
+     Input('currency-usd-btn', 'className')]
 )
-def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed_range, seats_range, category): # add car_types later
+def update_horsepower_boxplot(selected_companies, fuel_types, price_range, min_price, max_price, speed_range, seats_range, category, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
 
@@ -346,17 +346,21 @@ def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed
 
     valid_categories = [
         "company_names",
-        # "car_types",
         "fuel_types_cleaned"
     ]
     if category not in valid_categories:
         category = "company_names"
 
+    currency = 'CAD' if cad_class == "active-btn" else 'USD'
+    price_col = "cars_prices_cad" if currency == 'CAD' else "cars_prices_usd"
+
+    min_price = min_price if min_price is not None else price_range[0]
+    max_price = max_price if max_price is not None else price_range[1]
+
     filtered_df = cars_df[
         (cars_df['company_names'].isin(selected_companies)) &
         (cars_df['fuel_types_cleaned'].isin(fuel_types)) &
-        # (cars_df['car_types'].isin(car_types)) &
-        (cars_df['cars_prices_cad'].between(price_range[0], price_range[1])) &
+        (cars_df[price_col].between(min_price, max_price)) &
         (cars_df['total_speed'].between(speed_range[0], speed_range[1])) &
         (cars_df['seats'].between(seats_range[0], seats_range[1]))
     ]
@@ -364,7 +368,7 @@ def update_horsepower_boxplot(selected_companies, fuel_types, price_range, speed
     if filtered_df.empty:
         return empty_warning_plot()
 
-    return plot_boxplot_horsepower(filtered_df, category)
+    return plot_boxplot_horsepower(filtered_df, category, price_col, min_price, max_price)
 
 
 @callback(
