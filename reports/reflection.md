@@ -9,7 +9,8 @@ For this milestone: the following key implementations have been made based on ou
 - Boxplots- visualizing horsepower and price distribution by company, car type, and fuel type.  
 - Scatterplot highlighting the relationship between horsepower (or performance) and price which helps with identifying value propositions among various models.
 
-## Currency for price stability: The dashboard uses a 1.27 CAD/USD exchange rate to ensure consistency in price comparisons with the dataset's static pricing and avoid distortions from currency fluctuations
+## Currency for price stability: 
+The dashboard uses a 1.27 CAD/USD exchange rate to ensure consistency in price comparisons with the dataset's static pricing and avoid distortions from currency fluctuations
 
 ## Limitations and Future directions
 
