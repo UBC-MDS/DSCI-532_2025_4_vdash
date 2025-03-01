@@ -162,8 +162,8 @@ def plot_bar_chart(df):
             alt.Tooltip('count()', title='Count')
         ]
     ).properties(
-        width=700,
-        height=350
+        width=500,
+        height=300
     ).interactive().to_dict(format="vega")
 
     return chart
@@ -210,8 +210,8 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
             alt.Tooltip('cars_names:N', title="Car Models")
         ]
     ).properties(
-        width=700,
-        height=350
+        width=500,
+        height=300
     ).configure_axisX(
         labelAngle=0
     ).to_dict(format="vega")
@@ -266,7 +266,7 @@ def horsepower_price(filtered_df, x_var, price_col):
                 alt.Tooltip("car_types", title="Car Type"),
             ]
         )
-        .properties(width=300, height=450)
+        .properties(width=200, height=350)
         .interactive()
     )
 
@@ -319,8 +319,8 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
     )
 
     price_boxplot = alt.layer(boxplot, whisker).properties(
-        width=300,
-        height=450
+        width=200,
+        height=350
     ).to_dict(format="vega")
 
     return price_boxplot
@@ -332,7 +332,7 @@ def empty_warning_plot():
         text="No data available",
         fontSize=14,
     ).properties(
-        width=300, height=450
+        width=200, height=350
     ).to_dict()
 
 
@@ -409,8 +409,8 @@ def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices
 
     # Whiskers + Box + Median Tick
     chart = (whiskers + box + median_tick).properties(
-        width=300,
-        height=450
+        width=200,
+        height=350
     ).to_dict(format="vega")
 
     return chart
