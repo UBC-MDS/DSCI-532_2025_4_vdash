@@ -12,7 +12,7 @@ We have implemented most of the features outlined in our proposal. Our dashboard
 All components are properly linked via callbacks to update charts dynamically.
 
 ## 2. Data Visualizations
-- **Horsepower Boxplot**: Displays the distribution of horsepower across different selected filters, allowing users to compare performance variations. This visualization helps in identifying outliers and trends within specific categories.
+- **Horsepower Boxplot**: The Horsepower Boxplot provides an overview of the horsepower distribution across different selected filters. It allows users to identify variations in performance and detect outliers. Users can compare horsepower ranges for different vehicle types, helping them assess performance differences between categories. Tooltips display key statistical values such as minimum, Q1, median, Q3, and maximum horsepower. The boxplot updates dynamically based on user selections, ensuring that changes in filtering criteria are reflected in real-time.
 
 ## 3. Pending and Differentiated Implementations
 - The structure follows our original sketch with minor usability enhancements:
