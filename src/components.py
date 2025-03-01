@@ -223,12 +223,31 @@ def plot_grouped_histogram(df, currency='CAD'):
 
 # horsepower_price scatter plot
 def horsepower_price(filtered_df, x_var, price_col):
+    x_max = filtered_df[x_var].max() * 1.05
+    price_max = filtered_df[price_col].max() * 1.05
+
     chart = (
         alt.Chart(filtered_df)
         .mark_circle(size=80, opacity=0.8)
         .encode(
-            x=alt.X(x_var, title="Horse Power"),
-            y=alt.Y(price_col, title="Price"),
+            x=alt.X(
+                x_var, 
+                title="Horse Power",
+                scale=alt.Scale(
+                    domain=[0, x_max],
+                    nice=True
+                ),
+                axis=alt.Axis(grid=True)
+            ),
+            y=alt.Y(
+                price_col, 
+                title="Price",
+                scale=alt.Scale(
+                    domain=[0, price_max],
+                    nice=True
+                ),
+                axis=alt.Axis(grid=True)
+            ),
             color=alt.Color("company_names", legend=alt.Legend(title="Company")),
             tooltip=[
                 alt.Tooltip("cars_names:N", title="Car Name"),
@@ -243,7 +262,7 @@ def horsepower_price(filtered_df, x_var, price_col):
                 alt.Tooltip("car_types", title="Car Type"),
             ]
         )
-        .properties(width=500, height=400)
+        .properties(width=300, height=300)
         .interactive()
     )
 
