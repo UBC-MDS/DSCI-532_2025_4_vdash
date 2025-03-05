@@ -92,13 +92,15 @@ price_range_slider = dcc.RangeSlider(
 min_total_speed_input = dcc.Input(
     id="min-total-speed-input",
     type="number",
-    value=min_total_speed
+    value=min_total_speed,
+    style={"display": "none"}
 )
 
 max_total_speed_input = dcc.Input(
     id="max-total-speed-input",
     type="number",
-    value=max_total_speed
+    value=max_total_speed,
+    style={"display": "none"}
 )
 
 # Total speed range slider
@@ -117,13 +119,15 @@ total_speed_range_slider = dcc.RangeSlider(
 min_seats_input = dcc.Input(
     id="min-seats-input",
     type="number",
-    value=min_seats
+    value=min_seats,
+    style={"display": "none"}
 )
 
 max_seats_input = dcc.Input(
     id="max-seats-input",
     type="number",
-    value=max_seats
+    value=max_seats,
+    style={"display": "none"}
 )
 
 # Seat numbers range slider
@@ -338,7 +342,6 @@ def empty_warning_plot():
 
 # Boxplot: Horsepower distribution with category selection
 def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
-    df = df[df['horsepower'].notna()]
     if df.empty:
         return empty_warning_plot()
 
@@ -354,63 +357,36 @@ def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices
     if min_price is not None and max_price is not None:
         df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
 
-    # Calculate Boxplot statistics
-    summary_df = df.groupby(category).agg(
-        Min=('horsepower', 'min'),
-        Q1=('horsepower', lambda x: x.quantile(0.25)),
-        Median=('horsepower', 'median'),
-        Q3=('horsepower', lambda x: x.quantile(0.75)),
-        Max=('horsepower', 'max')
-    ).reset_index()
+    boxplot = alt.Chart(df).mark_boxplot().encode(
+        x=alt.X(f"{category}:N",
+                title=display_name,
+                axis=alt.Axis(labelAngle=-360)),
+        y=alt.Y("horsepower:Q",
+                title="Horsepower"),
+        color=alt.Color(f"{category}:N",
+                        title=display_name,
+                        legend=alt.Legend(title=display_name))
+    )
 
-    # Whiskers (Min and Max)
-    whiskers = alt.Chart(summary_df).mark_rule().encode(
-        x=alt.X(f'{category}:N', title=display_name, axis=alt.Axis(labelAngle=-360)),
-        y=alt.Y('Min:Q', title="Horsepower"),
-        y2='Max:Q',
+    summary_df = df.groupby(category)['horsepower'].describe().reset_index()
+    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
+
+    whisker = alt.Chart(summary_df).mark_rule().encode(
+        x=alt.X(f"{category}:N", title=display_name),
+        y=alt.Y("min:Q"),
         tooltip=[
-            alt.Tooltip('Max:Q', title="Max"),
-            alt.Tooltip('Q3:Q', title="75%"),
-            alt.Tooltip('Median:Q', title="Median"),
-            alt.Tooltip('Q1:Q', title="25%"),
-            alt.Tooltip('Min:Q', title="Min"),
-            alt.Tooltip(f'{category}:N', title=display_name)
+            alt.Tooltip(f"{category}:N", title=display_name),
+            alt.Tooltip("max:Q", title="Max"),
+            alt.Tooltip("Q3:Q", title="75% (Q3)"),
+            alt.Tooltip("median:Q", title="Median"),
+            alt.Tooltip("Q1:Q", title="25% (Q1)"),
+            alt.Tooltip("min:Q", title="Min")
         ]
     )
 
-    # Boxplot
-    box = alt.Chart(summary_df).mark_bar(size=20, opacity=0.6).encode(
-        x=alt.X(f'{category}:N'),
-        y=alt.Y('Q1:Q'),
-        y2='Q3:Q',
-        color=alt.Color(f'{category}:N', title=display_name, legend=alt.Legend(title=display_name)),
-        tooltip=[
-            alt.Tooltip('Max:Q', title="Max"),
-            alt.Tooltip('Q3:Q', title="75%"),
-            alt.Tooltip('Median:Q', title="Median"),
-            alt.Tooltip('Q1:Q', title="25%"),
-            alt.Tooltip('Min:Q', title="Min"),
-            alt.Tooltip(f'{category}:N', title="Category")
-        ]
-    )
-
-    # Median Tick
-    median_tick = alt.Chart(summary_df).mark_tick(
-        color='black',
-        size=40
-    ).encode(
-        x=alt.X(f'{category}:N'),
-        y=alt.Y('Median:Q'),
-        tooltip=[
-            alt.Tooltip('Median:Q', title="Median"),
-            alt.Tooltip(f'{category}:N', title=display_name)
-        ]
-    )
-
-    # Whiskers + Box + Median Tick
-    chart = (whiskers + box + median_tick).properties(
+    horsepower_boxplot = alt.layer(boxplot, whisker).properties(
         width=200,
         height=350
     ).to_dict(format="vega")
 
-    return chart
+    return horsepower_boxplot

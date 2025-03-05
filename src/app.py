@@ -86,18 +86,18 @@ sidebar = dbc.Card([
         car_types_dropdown,
 
         html.Label("Select price range:", className="fw-bold"),
-        price_range_slider,
+        html.Div(price_range_slider, style={"display": "none"}),
         html.Div([min_price_input, max_price_input], className="d-flex justify-content-between"),
         html.P(id="currency-label", className="text-muted text-end"),
 
         html.Label("Select total speed range:", className="fw-bold"),
         total_speed_range_slider,
-        html.Div([min_total_speed_input, max_total_speed_input], className="d-flex justify-content-between"),
+        html.Div([min_total_speed_input, max_total_speed_input], className="d-flex justify-content-between", style={"display": "none !important"}),
         html.P("km/h", className="text-muted text-end"),
 
         html.Label("Select seat numbers:", className="fw-bold"),
         seats_range_slider,
-        html.Div([min_seats_input, max_seats_input], className="d-flex justify-content-between"),
+        html.Div([min_seats_input, max_seats_input], className="d-flex justify-content-between", style={"display": "none !important"}),
         html.P("Seats", className="text-muted text-end"),
     ])
 ], body=True, className="p-3")
