@@ -63,7 +63,7 @@ Encountering issues? Need assistance? For any questions regarding this dashboard
 
 ## Contributing
 
-Interested in contributing? Check out the contributing guidelines at [CONTRIBUTING.md](https://github.com/UBC-MDS/DSCI-532_2025_4_vdash/blob/main/CONTRIBUTING.md) for details. Please note that this project is released with a [Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+Interested in contributing? Check out the contributing guidelines at [CONTRIBUTING.md](https://github.com/UBC-MDS/DSCI-532_2025_4_vdash/blob/main/CONTRIBUTING.md) for details. Please note that this project is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI-532_2025_4_vdash/blob/README/CONDUCT.md). By contributing to this project, you agree to abide by its terms.
 
 ## License
 
