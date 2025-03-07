@@ -67,6 +67,6 @@ Interested in contributing? Check out the [contributing guidelines](CONTRIBUTING
 
 ## License
 
-`DSCI-532_2025_4_vdash` was created by Abeba Nigussie Turi, Alexandra (Yining) Zhou, Archer Liu and Essie Zhang. It is licensed under the terms of the [MIT](LICENSE.md) license.
+`DSCI-532_2025_4_vdash` was created by Abeba Nigussie Turi, Alexandra (Yining) Zhou, Archer Liu and Essie Zhang. It is licensed under the terms of the [MIT](https://github.com/UBC-MDS/DSCI-532_2025_4_vdash/blob/main/LICENSE) license.
 
 ## Happy car hunting with VDash!
