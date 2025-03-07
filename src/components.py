@@ -92,13 +92,15 @@ price_range_slider = dcc.RangeSlider(
 min_total_speed_input = dcc.Input(
     id="min-total-speed-input",
     type="number",
-    value=min_total_speed
+    value=min_total_speed,
+    style={"width": "100px"} 
 )
 
 max_total_speed_input = dcc.Input(
     id="max-total-speed-input",
     type="number",
-    value=max_total_speed
+    value=max_total_speed,
+    style={"width": "100px"} 
 )
 
 # Total speed range slider
@@ -117,13 +119,15 @@ total_speed_range_slider = dcc.RangeSlider(
 min_seats_input = dcc.Input(
     id="min-seats-input",
     type="number",
-    value=min_seats
+    value=min_seats,
+    style={"width": "100px"}
 )
 
 max_seats_input = dcc.Input(
     id="max-seats-input",
     type="number",
-    value=max_seats
+    value=max_seats,
+    style={"width": "100px"}
 )
 
 # Seat numbers range slider
