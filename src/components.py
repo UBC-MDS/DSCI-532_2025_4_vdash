@@ -112,8 +112,9 @@ total_speed_range_slider = dcc.RangeSlider(
     value=[min_total_speed, max_total_speed],
     pushable=10,
     marks=None,
-    tooltip={"placement": "bottom"}
+    tooltip={"placement": "bottom", "always_visible": True}
 )
+
 
 # Seat numbers input boxes
 min_seats_input = dcc.Input(
@@ -138,7 +139,8 @@ seats_range_slider = dcc.RangeSlider(
     step=1,
     value=[min_seats, max_seats],
     pushable=1,
-    tooltip={"placement": "bottom"}
+    marks={i: str(i) for i in range(int(min_seats), int(max_seats) + 1)},
+    tooltip={"placement": "bottom", "always_visible": True}
 )
 
 

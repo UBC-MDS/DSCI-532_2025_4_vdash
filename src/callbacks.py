@@ -151,15 +151,6 @@ def sync_seats_inputs(slider_value):
     return min_seats, max_seats
 
 
-@callback(
-    Output('seats-range-slider', 'value'),
-    [Input('min-seats-input', 'value'),
-     Input('max-seats-input', 'value')]
-)
-def sync_seats_slider(min_input, max_input):
-    return [min_input, max_input]
-
-
 # Company dropdown limit selection to 5
 @callback(
     Output('overview-company-dropdown', 'options'),
