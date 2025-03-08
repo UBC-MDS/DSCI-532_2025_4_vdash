@@ -165,25 +165,74 @@ footer = dbc.Container([
 ], className="mt-4")
 
 # MAIN LAYOUT
+# app.layout = dbc.Container([
+#     header,
+
+#     # Company Overview Section
+#     dbc.Row([
+#         dbc.Col(company_overview, width=12)
+#     ], className="mb-4"),
+
+#     # Detailed Analysis Section (Filters & Charts)
+#     dbc.Row([
+#         dbc.Col(sidebar, width=3),
+#         dbc.Col(scatter_plot_card, width=3),
+#         dbc.Col(price_boxplot_card, width=3),
+#         dbc.Col(horsepower_boxplot_card, width=3),
+#     ], className="g-3"),
+
+#     # Footer Section
+#     footer
+
+# ], fluid=True)
+
 app.layout = dbc.Container([
     header,
-
-    # Company Overview Section
-    dbc.Row([
-        dbc.Col(company_overview, width=12)
-    ], className="mb-4"),
-
-    # Detailed Analysis Section (Filters & Charts)
-    dbc.Row([
-        dbc.Col(sidebar, width=3),
-        dbc.Col(scatter_plot_card, width=3),
-        dbc.Col(price_boxplot_card, width=3),
-        dbc.Col(horsepower_boxplot_card, width=3),
-    ], className="g-3"),
-
-    # Footer Section
+    dcc.Tabs([
+        dcc.Tab(label='About', children=[
+            dbc.Card([
+                dbc.CardBody([
+                    html.H3("🚀 Happy car hunting with VDash!", className="fw-bold mb-4"),
+                    html.P(
+                        "Welcome to VDash, an interactive dashboard for car buyers and automotive professionals to compare vehicles! "
+                        "Effortlessly compare vehicles based on performance, pricing, and key features with dynamic filters and interactive visuals.",
+                        className="mb-4"
+                    ),
+                    html.H4("Motivation and Purposes", className="fw-bold mb-3"),
+                    html.P(
+                        "VDash is a user-friendly interactive vehicle comparison dashboard customized for buyers in Canada. "
+                        "Choosing the right car can be overwhelming, and this dashboard simplifies the process by empowering users with data-driven insights. "
+                        "It is designed to assist users in making informed vehicle purchasing decisions through dynamic data visualization and exploration of the market through visual aids. "
+                        "The dashboard enables users to filter and compare cars based on multiple attributes such as price, horsepower, battery/engine capacity, speed, fuel type, seating capacity, and car type. "
+                        "By providing an interactive experience, the dashboard allows users to visualize trends, compare specifications across different models, and identify the best options based on their preferences.",
+                        className="mb-4"
+                    ),
+                    html.H4("Key Features", className="fw-bold mb-3"),
+                    html.Ul([
+                        html.Li("Compare Vehicles Across Multiple Attributes: Filter cars by price, horsepower, battery/engine capacity, speed, fuel type, seating capacity, and car type to find the best fit for your needs."),
+                        html.Li("Visualize Market Trends: Use dynamic plots to understand pricing distributions, performance differences, and how various car models compare."),
+                        html.Li("Make Data-Driven Decisions: Gain insights into key vehicle attributes with side-by-side comparisons and interactive visual analytics."),
+                        html.Li("Customize Your Search: Adjust sliders and dropdowns to refine your car search quickly and effectively. Toggle between CAD & USD pricing to view costs in your preferred currency."),
+                        html.Li("Enhance Your Car Buying Experience: Whether you’re a buyer, seller, or automotive enthusiast, VDash simplifies complex comparisons and helps you make informed purchasing decisions."),
+                    ], className="mb-4"),
+                ])
+            ], className="p-3")
+        ]),
+        dcc.Tab(label='Company Overview', children=[
+            dbc.Row([
+                dbc.Col(company_overview, width=12)
+            ], className="mb-4")
+        ]),
+        dcc.Tab(label='Detailed Analysis', children=[
+            dbc.Row([
+                dbc.Col(sidebar, width=3),
+                dbc.Col(scatter_plot_card, width=3),
+                dbc.Col(price_boxplot_card, width=3),
+                dbc.Col(horsepower_boxplot_card, width=3),
+            ], className="g-3")
+        ]),
+    ]),
     footer
-
 ], fluid=True)
 
 
