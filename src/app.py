@@ -42,7 +42,7 @@ header = dbc.Navbar(
 
 # COMPANY OVERVIEW SECTION
 company_overview = dbc.Card([
-    dbc.CardHeader(html.H4("📊 Company Overview", className="fw-bold")),
+    dbc.CardHeader(html.H4("Company Overview", className="fw-bold")),
     dbc.CardBody([
         # Company Dropdown
         overview_company_dropdown,
@@ -73,7 +73,7 @@ company_overview = dbc.Card([
 
 # DETAILED ANALYSIS - FILTERS (SIDEBAR)
 sidebar = dbc.Card([
-    dbc.CardHeader(html.H4("📊 Detailed Analysis", className="fw-bold")),
+    dbc.CardHeader(html.H4("Detailed Analysis", className="fw-bold")),
 
     dbc.CardBody([
         html.Label("Select companies:", className="fw-bold"),
@@ -116,6 +116,7 @@ scatter_plot_card = dbc.Card([
         value="horsepower",
         inline=True,
         className="mt-2 d-flex justify-content-center",
+        labelStyle={'margin-right': '15px', 'white-space': 'nowrap'}
     ),
 ], body=True, className="p-3")
 
@@ -129,6 +130,7 @@ price_boxplot_card = dbc.Card([
             {"label": "Fuel type", "value": "fuel_types_cleaned"},
         ],
         value="fuel_types_cleaned", inline=True, className="mt-2 d-flex justify-content-center",
+        labelStyle={'margin-right': '15px'}
     ),
 ], body=True, className="p-3")
 
@@ -142,6 +144,7 @@ horsepower_boxplot_card = dbc.Card([
             {"label": "Fuel type", "value": "fuel_types_cleaned"},
         ],
         value="company_names", inline=True, className="mt-2 d-flex justify-content-center",
+        labelStyle={'margin-right': '15px'}
     ),
 ], body=True, className="p-3")
 
