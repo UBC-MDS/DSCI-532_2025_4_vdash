@@ -21,6 +21,7 @@ from src.components import (
     min_seats_input,
     max_seats_input,
     max_speed_horsepower,
+    create_gauge_cards,
     plot_bar_chart,
     plot_grouped_histogram,
     plot_boxplot_price,
@@ -190,12 +191,7 @@ def update_speed_hp_card(selected_companies):
     if max_speed is None or max_hp is None:
         return "No data available for selected companies."
 
-    return html.Div([
-        html.H3(f"{max_speed} KM/H"),
-        html.P("Max total speed"),
-        html.H3(f"{max_hp} HP"),
-        html.P("Max horsepower")
-    ])
+    return create_gauge_cards(max_speed, max_hp)
 
 
 @callback(

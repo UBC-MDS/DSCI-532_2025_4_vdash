@@ -230,9 +230,9 @@ app.layout = dbc.Container([
                     dbc.Row([
                         dbc.Col(bar_chart_card, width=6),
                         dbc.Col(histogram_card, width=6),
-                    ], className="g-2")
+                    ], className="g-2 h-100")
                 ], width=9)
-            ], className="g-3")
+            ], className="g-3 h-100")
         ]),
         dcc.Tab(label='Detailed Analysis', children=[
             dbc.Row([

@@ -2,6 +2,7 @@ import altair as alt
 import pandas as pd
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 from .data import cars_df
 
 min_price_cad = cars_df['cars_prices_cad'].min()  # 5,400
@@ -177,6 +178,82 @@ def max_speed_horsepower(df):
     return max_speed, max_hp
 
 
+# Gauges: Max speed and horsepower gauges
+def create_gauge_cards(max_speed, max_hp):
+    # Speed gauge
+    speed_fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=max_speed,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': 'Max Speed (km/h)', 'font': {'size': 16, 'weight': 'bold'}},
+        gauge={
+            'axis': {
+                'range': [None, 500],
+                'tickmode': 'linear',
+                'tick0': 0,
+                'dtick': 100
+            },
+            'bar': {'color': "Navy"},
+        },
+        number={'font': {'size': 24}}
+    ))
+    speed_fig.update_layout(
+        width=220,
+        height=130,
+        margin=dict(l=10, r=10, t=50, b=10),
+        paper_bgcolor='white',
+        autosize=False
+    )
+
+    # Horsepower gauge
+    hp_fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=max_hp,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': 'Max Horsepower', 'font': {'size': 16, 'weight': 'bold'}},
+        gauge={
+            'axis': {
+                'range': [None, 2500],
+                'tickmode': 'linear',
+                'tick0': 0,
+                'dtick': 500
+            },
+            'bar': {'color': "FireBrick"},
+        },
+        number={'font': {'size': 24}}
+    ))
+    hp_fig.update_layout(
+        width=220,
+        height=130,
+        margin=dict(l=10, r=10, t=50, b=10),
+        paper_bgcolor='white',
+        autosize=False
+    )
+
+    return html.Div([
+        dbc.Row([
+            dbc.Col([
+                html.Div(
+                    dcc.Graph(
+                        figure=speed_fig,
+                        config={'displayModeBar': False}
+                    ),
+                    className="d-flex justify-content-center"
+                )
+            ], width=12, className="mb-2"),
+            dbc.Col([
+                html.Div(
+                    dcc.Graph(
+                        figure=hp_fig,
+                        config={'displayModeBar': False}
+                    ),
+                    className="d-flex justify-content-center"
+                )
+            ], width=12)
+        ])
+    ], className="d-flex flex-column align-items-center")
+
+
 # Bar chart: number of car models in each company
 def plot_bar_chart(df):
     chart = alt.Chart(df).mark_bar().encode(
@@ -188,7 +265,7 @@ def plot_bar_chart(df):
         ]
     ).properties(
         width=450,
-        height=300
+        height=400
     ).interactive().to_dict(format="vega")
 
     return chart
@@ -236,7 +313,7 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
         ]
     ).properties(
         width=450,
-        height=300
+        height=400
     ).configure_axisX(
         labelAngle=0
     ).to_dict(format="vega")
