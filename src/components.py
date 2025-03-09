@@ -1,6 +1,7 @@
 import altair as alt
 import pandas as pd
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 from .data import cars_df
 
 min_price_cad = cars_df['cars_prices_cad'].min()  # 5,400
@@ -16,9 +17,27 @@ max_seats = cars_df['seats'].max()  # 20
 
 # Currency switch buttons
 currency_switch_btns = html.Div([
-    html.Button("CAD", id="currency-cad-btn", n_clicks=0, className="active-btn"),
-    html.Button("USD", id="currency-usd-btn", n_clicks=0, className="inactive-btn"),
-])
+    dbc.ButtonGroup([
+        dbc.Button("CAD",
+                   id="currency-cad-btn",
+                   n_clicks=0,
+                   className="active-btn",
+                   style={
+                       "backgroundColor": "white",
+                       "color": "black",
+                       "font-weight": "bold"
+                    }),
+        dbc.Button("USD",
+                   id="currency-usd-btn",
+                   n_clicks=0,
+                   className="inactive-btn",
+                   style={
+                       "backgroundColor": "transparent",
+                       "color": "white",
+                       "font-weight": "bold"
+                    }),
+    ], size="sm", style={"width": "120px"})
+], className="d-flex align-items-center")
 
 # Overview company dropdown multi-selector
 overview_company_dropdown = dcc.Dropdown(
