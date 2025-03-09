@@ -6,20 +6,6 @@ import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.data import cars_df
 from src.components import (
-    currency_switch_btns,
-    overview_company_dropdown,
-    details_company_dropdown,
-    fuel_types_dropdown,
-    car_types_dropdown,
-    price_range_slider,
-    min_price_input,
-    max_price_input,
-    total_speed_range_slider,
-    min_total_speed_input,
-    max_total_speed_input,
-    seats_range_slider,
-    min_seats_input,
-    max_seats_input,
     max_speed_horsepower,
     create_gauge_cards,
     plot_bar_chart,
@@ -36,10 +22,6 @@ from src.components import (
 
 
 all_companies = sorted(cars_df['company_names'].unique())
-min_price_cad = cars_df['cars_prices_cad'].min()  # 5,400
-max_price_cad = cars_df['cars_prices_cad'].max()  # 24,300,000
-min_price_usd = cars_df['cars_prices_usd'].min()  # 4,000
-max_price_usd = cars_df['cars_prices_usd'].max()  # 18,000,000
 
 
 # Callback to update currency state
