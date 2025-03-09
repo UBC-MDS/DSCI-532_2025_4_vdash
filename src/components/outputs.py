@@ -99,6 +99,7 @@ def plot_bar_chart(df):
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('count()', title='Number of Car Models'),
         y=alt.Y('company_names:N', title='Company'),
+        color=alt.Color('company_names:N', legend=None),
         tooltip=[
             alt.Tooltip('company_names:N', title='Company'),
             alt.Tooltip('count()', title='Count')
