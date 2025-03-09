@@ -40,36 +40,35 @@ header = dbc.Navbar(
     color="dark", dark=True, className="mb-4 p-3"
 )
 
-# COMPANY OVERVIEW SECTION
-company_overview = dbc.Card([
-    dbc.CardHeader(html.H4("Company Overview", className="fw-bold")),
+# COMPANY OVERVIEW - FILTERS (SIDEBAR)
+company_sidebar = dbc.Card([
+    dbc.CardHeader(html.H4("Company Selection", className="fw-bold")),
     dbc.CardBody([
-        # Company Dropdown
+        html.Label("Select company:", className="fw-bold"),
         overview_company_dropdown,
-
-        # Bar Chart & Histogram
-        dbc.Row([
-            dbc.Col([
-                dbc.Card(
-                    id="max-speed-hp-card",
-                    className="metric-box p-3",
-                )
-            ], width=2),
-            dbc.Col([
-                html.Div([
-                    html.H5("Number of Car Models by Company", className="text-center fw-bold"),
-                    dvc.Vega(id='cars-bar-chart')
-                ], style={"textAlign": "center"})
-            ], width=5),
-            dbc.Col([
-                html.Div([
-                    html.H5("Car Price Distribution", className="text-center fw-bold"),
-                    dvc.Vega(id='price-range-histogram')
-                ], style={"textAlign": "center"})
-            ], width=5)
+        html.Div([
+            dbc.Card(
+                id="max-speed-hp-card",
+                className="metric-box p-3 mt-4",
+            )
         ])
     ])
-], className="p-3")
+], body=True, className="p-3 h-100")
+
+# COMPANY OVERVIEW - CHARTS
+bar_chart_card = dbc.Card([
+    html.Div([
+        html.H6("Number of Car Models by Company", className="fw-bold text-center mb-3"),
+        dvc.Vega(id='cars-bar-chart')
+    ], className="d-flex flex-column justify-content-center align-items-center h-100")
+], body=True, className="p-3 h-100")
+
+histogram_card = dbc.Card([
+    html.Div([
+        html.H6("Car Price Distribution", className="fw-bold text-center mb-3"),
+        dvc.Vega(id='price-range-histogram', className="align-self-start ms-2")
+    ], className="d-flex flex-column justify-content-center align-items-center h-100")
+], body=True, className="p-3 h-100")
 
 # DETAILED ANALYSIS - FILTERS (SIDEBAR)
 sidebar = dbc.Card([
@@ -100,53 +99,59 @@ sidebar = dbc.Card([
         html.Div([min_seats_input, max_seats_input], className="d-flex justify-content-between", style={"display": "none !important"}),
         html.P("Seats", className="text-muted text-end"),
     ])
-], body=True, className="p-3")
+], body=True, className="p-3 h-100")
 
 # DETAILED ANALYSIS - CHARTS
 scatter_plot_card = dbc.Card([
-    html.H5(id="scatter-plot-title", className="text-center fw-bold"),
-    dvc.Vega(id="scatter-plot"),
-    dcc.RadioItems(
-        id="scatter-toggle",
-        options=[
-            {"label": "Horsepower", "value": "horsepower"},
-            {"label": "Performance", "value": "performance_0_100_km/h"},
-            {"label": "Total speed", "value": "total_speed"},
-        ],
-        value="horsepower",
-        inline=True,
-        className="mt-2 d-flex justify-content-center",
-        labelStyle={'margin-right': '15px', 'white-space': 'nowrap'}
-    ),
-], body=True, className="p-3")
+    html.Div([
+        html.H6(id="scatter-plot-title", className="fw-bold text-center mb-3"),
+        dvc.Vega(id="scatter-plot", className="align-self-start ms-2"),
+        dcc.RadioItems(
+            id="scatter-toggle",
+            options=[
+                {"label": " Horsepower", "value": "horsepower"},
+                {"label": " Performance", "value": "performance_0_100_km/h"},
+                {"label": " Total speed", "value": "total_speed"},
+            ],
+            value="horsepower",
+            inline=True,
+            className="mt-2 d-flex justify-content-center",
+            labelStyle={'margin-right': '15px', 'white-space': 'nowrap'}
+        )
+    ], className="d-flex flex-column justify-content-center align-items-center h-100")
+], body=True, className="p-3 h-100")
 
 price_boxplot_card = dbc.Card([
-    html.H5(id="price-boxplot-title", className="text-center fw-bold"),
-    dvc.Vega(id="price-boxplot"),
-    dcc.RadioItems(
-        id="boxplot-category-radio1",
-        options=[
-            {"label": "Company", "value": "company_names"},
-            {"label": "Fuel type", "value": "fuel_types_cleaned"},
-        ],
-        value="fuel_types_cleaned", inline=True, className="mt-2 d-flex justify-content-center",
-        labelStyle={'margin-right': '15px'}
-    ),
-], body=True, className="p-3")
+    html.Div([
+        html.H6(id="price-boxplot-title", className="fw-bold text-center mb-3"),
+        dvc.Vega(id="price-boxplot", className="align-self-start ms-2"),
+        dcc.RadioItems(
+            id="boxplot-category-radio1",
+            options=[
+                {"label": " Company", "value": "company_names"},
+                {"label": " Fuel type", "value": "fuel_types_cleaned"},
+            ],
+            value="company_names", inline=True, className="mt-2 d-flex justify-content-center",
+            labelStyle={'margin-right': '15px'}
+        )
+    ], className="d-flex flex-column justify-content-center align-items-center h-100")
+], body=True, className="p-3 h-100")
 
 horsepower_boxplot_card = dbc.Card([
-    html.H5(id="horsepower-boxplot-title", className="text-center fw-bold"),
-    dvc.Vega(id="horsepower-boxplot"),
-    dcc.RadioItems(
-        id="boxplot-category-radio2",
-        options=[
-            {"label": "Company", "value": "company_names"},
-            {"label": "Fuel type", "value": "fuel_types_cleaned"},
-        ],
-        value="company_names", inline=True, className="mt-2 d-flex justify-content-center",
-        labelStyle={'margin-right': '15px'}
-    ),
-], body=True, className="p-3")
+    html.Div([
+        html.H6(id="horsepower-boxplot-title", className="fw-bold text-center mb-3"),
+        dvc.Vega(id="horsepower-boxplot", className="align-self-start ms-2"),
+        dcc.RadioItems(
+            id="boxplot-category-radio2",
+            options=[
+                {"label": " Company", "value": "company_names"},
+                {"label": " Fuel type", "value": "fuel_types_cleaned"},
+            ],
+            value="company_names", inline=True, className="mt-2 d-flex justify-content-center",
+            labelStyle={'margin-right': '15px'}
+        )
+    ], className="d-flex flex-column justify-content-center align-items-center h-100")
+], body=True, className="p-3 h-100")
 
 # FOOTER SECTION
 footer = dbc.Container([
@@ -220,8 +225,14 @@ app.layout = dbc.Container([
         ]),
         dcc.Tab(label='Company Overview', children=[
             dbc.Row([
-                dbc.Col(company_overview, width=12)
-            ], className="mb-4")
+                dbc.Col(company_sidebar, width=3),
+                dbc.Col([
+                    dbc.Row([
+                        dbc.Col(bar_chart_card, width=6),
+                        dbc.Col(histogram_card, width=6),
+                    ], className="g-2 h-100")
+                ], width=9)
+            ], className="g-3 h-100")
         ]),
         dcc.Tab(label='Detailed Analysis', children=[
             dbc.Row([

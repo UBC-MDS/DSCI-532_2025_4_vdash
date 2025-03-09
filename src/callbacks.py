@@ -21,6 +21,7 @@ from src.components import (
     min_seats_input,
     max_seats_input,
     max_speed_horsepower,
+    create_gauge_cards,
     plot_bar_chart,
     plot_grouped_histogram,
     plot_boxplot_price,
@@ -44,25 +45,29 @@ max_price_usd = cars_df['cars_prices_usd'].max()  # 18,000,000
 # Callback to update currency state
 @callback(
     [Output('currency-cad-btn', 'className'),
-     Output('currency-usd-btn', 'className')],
+     Output('currency-usd-btn', 'className'),
+     Output('currency-cad-btn', 'style'),
+     Output('currency-usd-btn', 'style')],
     [Input('currency-cad-btn', 'n_clicks'),
      Input('currency-usd-btn', 'n_clicks')]
 )
 def update_currency_buttons(cad_clicks, usd_clicks):
     cad_clicks = cad_clicks or 0
     usd_clicks = usd_clicks or 0
+    active_style = {"backgroundColor": "white", "color": "black", "font-weight": "bold"}
+    inactive_style = {"backgroundColor": "transparent", "color": "white", "font-weight": "bold"}
 
     if cad_clicks == 0 and usd_clicks == 0:
-        return "active-btn", "inactive-btn"
+        return "active-btn", "inactive-btn", active_style, inactive_style
 
     if cad_clicks >= usd_clicks and usd_clicks == 0:
-        return "active-btn", "inactive-btn"
+        return "active-btn", "inactive-btn", active_style, inactive_style
     elif usd_clicks >= cad_clicks and cad_clicks == 0:
-        return "inactive-btn", "active-btn"
+        return "inactive-btn", "active-btn", inactive_style, active_style
     elif cad_clicks > usd_clicks:
-        return "active-btn", "inactive-btn"
+        return "active-btn", "inactive-btn", active_style, inactive_style
     else:
-        return "inactive-btn", "active-btn"
+        return "inactive-btn", "active-btn", inactive_style, active_style
 
 
 # Callback to synchronize sliders and input boxes
@@ -186,12 +191,7 @@ def update_speed_hp_card(selected_companies):
     if max_speed is None or max_hp is None:
         return "No data available for selected companies."
 
-    return html.Div([
-        html.H3(f"{max_speed} KM/H"),
-        html.P("Max total speed"),
-        html.H3(f"{max_hp} HP"),
-        html.P("Max horsepower")
-    ])
+    return create_gauge_cards(max_speed, max_hp)
 
 
 @callback(

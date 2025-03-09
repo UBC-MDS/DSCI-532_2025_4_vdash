@@ -1,6 +1,8 @@
 import altair as alt
 import pandas as pd
 from dash import html, dcc
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 from .data import cars_df
 
 min_price_cad = cars_df['cars_prices_cad'].min()  # 5,400
@@ -16,9 +18,27 @@ max_seats = cars_df['seats'].max()  # 20
 
 # Currency switch buttons
 currency_switch_btns = html.Div([
-    html.Button("CAD", id="currency-cad-btn", n_clicks=0, className="active-btn"),
-    html.Button("USD", id="currency-usd-btn", n_clicks=0, className="inactive-btn"),
-])
+    dbc.ButtonGroup([
+        dbc.Button("CAD",
+                   id="currency-cad-btn",
+                   n_clicks=0,
+                   className="active-btn",
+                   style={
+                       "backgroundColor": "white",
+                       "color": "black",
+                       "font-weight": "bold"
+                    }),
+        dbc.Button("USD",
+                   id="currency-usd-btn",
+                   n_clicks=0,
+                   className="inactive-btn",
+                   style={
+                       "backgroundColor": "transparent",
+                       "color": "white",
+                       "font-weight": "bold"
+                    }),
+    ], size="sm", style={"width": "120px"})
+], className="d-flex align-items-center")
 
 # Overview company dropdown multi-selector
 overview_company_dropdown = dcc.Dropdown(
@@ -158,6 +178,82 @@ def max_speed_horsepower(df):
     return max_speed, max_hp
 
 
+# Gauges: Max speed and horsepower gauges
+def create_gauge_cards(max_speed, max_hp):
+    # Speed gauge
+    speed_fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=max_speed,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': 'Max Speed (km/h)', 'font': {'size': 16, 'weight': 'bold'}},
+        gauge={
+            'axis': {
+                'range': [None, 500],
+                'tickmode': 'linear',
+                'tick0': 0,
+                'dtick': 100
+            },
+            'bar': {'color': "Navy"},
+        },
+        number={'font': {'size': 24}}
+    ))
+    speed_fig.update_layout(
+        width=220,
+        height=130,
+        margin=dict(l=10, r=10, t=50, b=10),
+        paper_bgcolor='white',
+        autosize=False
+    )
+
+    # Horsepower gauge
+    hp_fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=max_hp,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': 'Max Horsepower', 'font': {'size': 16, 'weight': 'bold'}},
+        gauge={
+            'axis': {
+                'range': [None, 2500],
+                'tickmode': 'linear',
+                'tick0': 0,
+                'dtick': 500
+            },
+            'bar': {'color': "FireBrick"},
+        },
+        number={'font': {'size': 24}}
+    ))
+    hp_fig.update_layout(
+        width=220,
+        height=130,
+        margin=dict(l=10, r=10, t=50, b=10),
+        paper_bgcolor='white',
+        autosize=False
+    )
+
+    return html.Div([
+        dbc.Row([
+            dbc.Col([
+                html.Div(
+                    dcc.Graph(
+                        figure=speed_fig,
+                        config={'displayModeBar': False}
+                    ),
+                    className="d-flex justify-content-center"
+                )
+            ], width=12, className="mb-2"),
+            dbc.Col([
+                html.Div(
+                    dcc.Graph(
+                        figure=hp_fig,
+                        config={'displayModeBar': False}
+                    ),
+                    className="d-flex justify-content-center"
+                )
+            ], width=12)
+        ])
+    ], className="d-flex flex-column align-items-center")
+
+
 # Bar chart: number of car models in each company
 def plot_bar_chart(df):
     chart = alt.Chart(df).mark_bar().encode(
@@ -168,8 +264,8 @@ def plot_bar_chart(df):
             alt.Tooltip('count()', title='Count')
         ]
     ).properties(
-        width=500,
-        height=300
+        width=450,
+        height=400
     ).interactive().to_dict(format="vega")
 
     return chart
@@ -216,8 +312,8 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
             alt.Tooltip('cars_names:N', title="Car Models")
         ]
     ).properties(
-        width=500,
-        height=300
+        width=450,
+        height=400
     ).configure_axisX(
         labelAngle=0
     ).to_dict(format="vega")
@@ -272,7 +368,7 @@ def horsepower_price(filtered_df, x_var, price_col):
                 alt.Tooltip("car_types", title="Car Type"),
             ]
         )
-        .properties(width=200, height=350)
+        .properties(width=200, height=400)
         .interactive()
     )
 
@@ -326,7 +422,7 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
 
     price_boxplot = alt.layer(boxplot, whisker).properties(
         width=200,
-        height=350
+        height=400
     ).to_dict(format="vega")
 
     return price_boxplot
@@ -388,7 +484,7 @@ def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices
 
     horsepower_boxplot = alt.layer(boxplot, whisker).properties(
         width=200,
-        height=350
+        height=400
     ).to_dict(format="vega")
 
     return horsepower_boxplot
