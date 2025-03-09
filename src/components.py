@@ -168,7 +168,7 @@ def plot_bar_chart(df):
             alt.Tooltip('count()', title='Count')
         ]
     ).properties(
-        width=500,
+        width=450,
         height=300
     ).interactive().to_dict(format="vega")
 
@@ -216,7 +216,7 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
             alt.Tooltip('cars_names:N', title="Car Models")
         ]
     ).properties(
-        width=500,
+        width=450,
         height=300
     ).configure_axisX(
         labelAngle=0
@@ -272,7 +272,7 @@ def horsepower_price(filtered_df, x_var, price_col):
                 alt.Tooltip("car_types", title="Car Type"),
             ]
         )
-        .properties(width=200, height=350)
+        .properties(width=200, height=400)
         .interactive()
     )
 
@@ -326,7 +326,7 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
 
     price_boxplot = alt.layer(boxplot, whisker).properties(
         width=200,
-        height=350
+        height=400
     ).to_dict(format="vega")
 
     return price_boxplot
@@ -388,7 +388,7 @@ def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices
 
     horsepower_boxplot = alt.layer(boxplot, whisker).properties(
         width=200,
-        height=350
+        height=400
     ).to_dict(format="vega")
 
     return horsepower_boxplot
