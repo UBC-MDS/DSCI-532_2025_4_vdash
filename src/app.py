@@ -19,7 +19,11 @@ from src.components.structural_elements import (
 )
 
 # Initialize Dash App with Bootstrap Theme
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    title="VDash: Speed Up Your Car Hunt"
+)
 server = app.server
 
 # MAIN LAYOUT
