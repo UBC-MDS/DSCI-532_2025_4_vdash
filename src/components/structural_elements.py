@@ -25,12 +25,18 @@ def create_header():
     return dbc.Navbar(
         dbc.Container([
             html.Div([
-                html.Img(src="assets/logo.png", height="50px", className="me-3"),
-                html.H1("VDash: Speed Up Your Car Hunt", className="text-light fw-bold")
+                html.Img(src="assets/logo.png", height="100px", className="me-3",
+                         style={"margin-left": "-12px", "align-items": "center"}),
+                html.H1("VDash: Speed Up Your Car Hunt",
+                        className="text-light fw-bold fs-2 m-0",
+                        style={"padding-left": "10px"}),
             ], className="d-flex align-items-center"),
             currency_switch_btns  # CAD/USD Switch
         ], fluid=True),
-        color="dark", dark=True, className="mb-4 p-3"
+        color="dark",
+        dark=True,
+        className="mb-4",
+        style={"height": "100px"}
     )
 
 
