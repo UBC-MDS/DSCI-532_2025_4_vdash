@@ -24,7 +24,7 @@ from src.components import (
 
 all_companies = sorted(cars_df['company_names'].unique())
 alt.data_transformers.enable("vegafusion")
-#memory = joblib.Memory("tmp", verbose=0)
+memory = joblib.Memory("tmp", verbose=0)
 
 # Callback to update currency state
 @callback(
@@ -35,7 +35,7 @@ alt.data_transformers.enable("vegafusion")
     [Input('currency-cad-btn', 'n_clicks'),
      Input('currency-usd-btn', 'n_clicks')]
 )
-
+@memory.cache()
 def update_currency_buttons(cad_clicks, usd_clicks):
     cad_clicks = cad_clicks or 0
     usd_clicks = usd_clicks or 0
@@ -91,6 +91,7 @@ def sync_price_slider(min_input, max_input):
      Input('currency-usd-btn', 'className')],
     prevent_initial_call=True
 )
+@memory.cache()
 def update_price_components(cad_class, usd_class):
     if cad_class == "active-btn":
         return min_price_cad, max_price_cad, min_price_cad, max_price_cad, [min_price_cad, max_price_cad], min_price_cad, max_price_cad, min_price_cad, max_price_cad
@@ -103,6 +104,7 @@ def update_price_components(cad_class, usd_class):
     [Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')]
 )
+@memory.cache()
 def update_currency_label(cad_class, usd_class):
     if cad_class == "active-btn":
         return "CAD"
@@ -183,6 +185,7 @@ def update_speed_hp_card(selected_companies):
     Output('cars-bar-chart', 'spec'),
     [Input('overview-company-dropdown', 'value')]
 )
+@memory.cache()
 def update_bar_chart(selected_companies):
     if not selected_companies:
         return empty_warning_plot()
@@ -198,6 +201,7 @@ def update_bar_chart(selected_companies):
      Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')]
 )
+@memory.cache()
 def update_histogram(selected_companies, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
@@ -223,6 +227,7 @@ def update_histogram(selected_companies, cad_class, usd_class):
         Input("currency-usd-btn", "className"),
     ]
 )
+@memory.cache()
 def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, price_range, speed_range, seat_range, x_var, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
@@ -272,6 +277,7 @@ def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, 
      Input('seats-range-slider', 'value'),
      Input('boxplot-category-radio1', 'value')]
 )
+@memory.cache()
 def update_price_boxplot(cad_class, usd_class, selected_companies,
                          fuel_types, car_types, price_range, min_price, 
                          max_price, speed_range, seats_range, category):
@@ -318,6 +324,7 @@ def update_price_boxplot(cad_class, usd_class, selected_companies,
      Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')]
 )
+@memory.cache()
 def update_horsepower_boxplot(selected_companies, fuel_types, car_types, price_range, min_price, max_price, speed_range, seats_range, category, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
