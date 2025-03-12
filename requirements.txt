@@ -10,3 +10,6 @@ ipywidgets==8.1.5
 altair==5.5.0
 vl-convert-python==1.7.0
 kagglehub==0.3.10
+joblib=1.4.2
+pyarrow=19.0.1
+vegafusion=2.0.1
