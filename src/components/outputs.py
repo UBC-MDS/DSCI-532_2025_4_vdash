@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 
 
 # ============ OUTPUTS ============
+alt.data_transformers.enable("vegafusion")
 
 # Card: Max total speed & horsepower within selected companies
 def max_speed_horsepower(df):
@@ -138,9 +139,7 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
         cars_names=('cars_names', lambda x: list(x.dropna().astype(str)))
     ).reset_index()
 
-    grouped_df['cars_names'] = grouped_df['cars_names'].apply(
-        lambda x: ', '.join(x[:14]) + '...' if isinstance(x, list) and len(x) > 14 else ', '.join(x) if isinstance(x, list) else ''
-    )
+    grouped_df['cars_names'] = grouped_df['cars_names'].str[:14].str.join(', ') + '...'
 
     chart = alt.Chart(grouped_df).mark_bar().encode(
         x=alt.X('Price Range:N', title=x_title, sort=price_labels),
@@ -175,10 +174,7 @@ def horsepower_price(filtered_df, x_var, price_col):
     x_title = x_title_map.get(x_var, "Horse Power")
     y_title = "Price (CAD)" if price_col == "cars_prices_cad" else "Price (USD)"
 
-    chart = (
-        alt.Chart(filtered_df)
-        .mark_circle(size=80, opacity=0.8)
-        .encode(
+    chart = alt.Chart(filtered_df).mark_circle(size=80, opacity=0.8).encode(
             x=alt.X(
                 x_var,
                 title=x_title,
@@ -208,11 +204,8 @@ def horsepower_price(filtered_df, x_var, price_col):
                 alt.Tooltip("seats", title="Seats"),
                 alt.Tooltip("car_types", title="Car Type"),
             ]
-        )
-        .properties(width=200, height=400)
-        .interactive()
-    )
-
+        ).properties(width=200, height=400).interactive()
+    chart = chart.to_dict(format="vega")
     return chart
 
 
@@ -235,7 +228,7 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
         df = df[(df[price_col] >= min_price) & (df[price_col] <= max_price)]
 
     summary_df = df.groupby(category)[price_col].describe().reset_index()
-    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
+    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "median", "75%": "Q3"})
 
     boxplot = alt.Chart(df).mark_boxplot().encode(
         x=alt.X(f"{category}:N",
@@ -308,7 +301,7 @@ def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices
     )
 
     summary_df = df.groupby(category)['horsepower'].describe().reset_index()
-    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "Median", "75%": "Q3"})
+    summary_df = summary_df.rename(columns={"25%": "Q1", "50%": "median", "75%": "Q3"})
 
     whisker = alt.Chart(summary_df).mark_rule().encode(
         x=alt.X(f"{category}:N", title=display_name),

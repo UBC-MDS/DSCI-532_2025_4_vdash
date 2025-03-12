@@ -3,6 +3,7 @@ import sys
 import os
 import altair as alt
 import pandas as pd
+import joblib
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.data import cars_df
 from src.components import (
@@ -22,7 +23,8 @@ from src.components import (
 
 
 all_companies = sorted(cars_df['company_names'].unique())
-
+alt.data_transformers.enable("vegafusion")
+#memory = joblib.Memory("tmp", verbose=0)
 
 # Callback to update currency state
 @callback(
@@ -33,6 +35,7 @@ all_companies = sorted(cars_df['company_names'].unique())
     [Input('currency-cad-btn', 'n_clicks'),
      Input('currency-usd-btn', 'n_clicks')]
 )
+
 def update_currency_buttons(cad_clicks, usd_clicks):
     cad_clicks = cad_clicks or 0
     usd_clicks = usd_clicks or 0
@@ -252,7 +255,7 @@ def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, 
 
     scatter_chart = horsepower_price(filtered_df, x_var, price_col)
 
-    return scatter_chart.to_dict()
+    return scatter_chart
 
 
 @callback(
