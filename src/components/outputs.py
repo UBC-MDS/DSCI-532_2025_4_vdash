@@ -170,7 +170,7 @@ def horsepower_price(filtered_df, x_var, price_col):
     x_title_map = {
         "horsepower": "Horse Power",
         "performance_0_100_km/h": "Performance (0-100 km/h)",
-        "total_speed": "Total Speed (km/h)"
+        "total_speed": "Top Speed (km/h)"
     }
     x_title = x_title_map.get(x_var, "Horse Power")
     y_title = "Price (CAD)" if price_col == "cars_prices_cad" else "Price (USD)"
@@ -199,11 +199,11 @@ def horsepower_price(filtered_df, x_var, price_col):
             ),
             color=alt.Color("company_names", legend=alt.Legend(title="Company")),
             tooltip=[
-                alt.Tooltip("cars_names:N", title="Car Name"),
+                alt.Tooltip("cars_names:N", title="Car Model"),
                 alt.Tooltip("company_names:N", title="Company"),
                 alt.Tooltip("fuel_types_cleaned:N", title="Fuel Type"),
                 alt.Tooltip(price_col, title=y_title),
-                alt.Tooltip(x_var, title=x_title),
+                alt.Tooltip(x_var, title="Top Speed (km/h)") if x_var == "total_speed" else alt.Tooltip(x_var, title=x_title),
                 alt.Tooltip("cc_battery_capacity", title="CC/Battery Capacity"),
                 alt.Tooltip("seats", title="Seats"),
                 alt.Tooltip("car_types", title="Car Type"),
