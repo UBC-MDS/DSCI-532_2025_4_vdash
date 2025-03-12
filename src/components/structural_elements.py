@@ -110,7 +110,7 @@ def create_scatter_plot_card():
                 options=[
                     {"label": " Horsepower", "value": "horsepower"},
                     {"label": " Performance", "value": "performance_0_100_km/h"},
-                    {"label": " Total speed", "value": "total_speed"},
+                    {"label": " Top Speed", "value": "total_speed"},
                 ],
                 value="horsepower",
                 inline=True,
