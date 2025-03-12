@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import kagglehub
 import shutil
+import joblib
 
+memory = joblib.Memory("cache", verbose=0)
 
 # Set up directories for data storage
 def setup_directories():
@@ -121,6 +123,7 @@ def categorize_car_type(row):
 
 
 # Clean and transform the raw car data
+@memory.cache()
 def clean_data(df):
     # Standardize column names
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_", regex=True).str.replace(r"[()\[\]]", "", regex=True)
@@ -214,6 +217,7 @@ def clean_data(df):
 
 
 # Prepare data for the dashboard
+@memory.cache()
 def prepare_data():
     paths = setup_directories()
     
