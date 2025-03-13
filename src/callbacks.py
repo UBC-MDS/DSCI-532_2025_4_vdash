@@ -3,6 +3,7 @@ import sys
 import os
 import altair as alt
 import pandas as pd
+import joblib
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.data import cars_df
 from src.components import (
@@ -22,7 +23,8 @@ from src.components import (
 
 
 all_companies = sorted(cars_df['company_names'].unique())
-
+alt.data_transformers.enable("vegafusion")
+memory = joblib.Memory("cache", verbose=0)
 
 # Callback to update currency state
 @callback(
@@ -180,6 +182,7 @@ def update_speed_hp_card(selected_companies):
     Output('cars-bar-chart', 'spec'),
     [Input('overview-company-dropdown', 'value')]
 )
+@memory.cache()
 def update_bar_chart(selected_companies):
     if not selected_companies:
         return empty_warning_plot()
@@ -195,6 +198,7 @@ def update_bar_chart(selected_companies):
      Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')]
 )
+@memory.cache()
 def update_histogram(selected_companies, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
@@ -220,6 +224,7 @@ def update_histogram(selected_companies, cad_class, usd_class):
         Input("currency-usd-btn", "className"),
     ]
 )
+@memory.cache()
 def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, price_range, speed_range, seat_range, x_var, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
@@ -252,7 +257,7 @@ def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, 
 
     scatter_chart = horsepower_price(filtered_df, x_var, price_col)
 
-    return scatter_chart.to_dict()
+    return scatter_chart
 
 
 @callback(
@@ -269,6 +274,7 @@ def update_scatter_plot(selected_companies, selected_fuels, selected_car_types, 
      Input('seats-range-slider', 'value'),
      Input('boxplot-category-radio1', 'value')]
 )
+@memory.cache()
 def update_price_boxplot(cad_class, usd_class, selected_companies,
                          fuel_types, car_types, price_range, min_price, 
                          max_price, speed_range, seats_range, category):
@@ -315,6 +321,7 @@ def update_price_boxplot(cad_class, usd_class, selected_companies,
      Input('currency-cad-btn', 'className'),
      Input('currency-usd-btn', 'className')]
 )
+@memory.cache()
 def update_horsepower_boxplot(selected_companies, fuel_types, car_types, price_range, min_price, max_price, speed_range, seats_range, category, cad_class, usd_class):
     if not selected_companies:
         return empty_warning_plot()
