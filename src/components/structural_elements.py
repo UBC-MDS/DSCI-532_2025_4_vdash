@@ -22,19 +22,37 @@ from .inputs import (
 
 # Structural elements for the dashboard layout
 def create_header():
+    """
+    Creates the dashboard header with the logo, title, and currency switch buttons.
+
+    Returns:
+        dbc.Navbar: A Bootstrap-styled navbar containing the dashboard title and currency switch.
+    """
     return dbc.Navbar(
         dbc.Container([
             html.Div([
-                html.Img(src="assets/logo.png", height="50px", className="me-3"),
-                html.H1("VDash: Speed Up Your Car Hunt", className="text-light fw-bold")
+                html.Img(src="assets/logo.png", height="100px", className="me-3",
+                         style={"margin-left": "-12px", "align-items": "center"}),
+                html.H1("VDash: Speed Up Your Car Hunt",
+                        className="text-light fw-bold fs-2 m-0",
+                        style={"padding-left": "10px"}),
             ], className="d-flex align-items-center"),
             currency_switch_btns  # CAD/USD Switch
         ], fluid=True),
-        color="dark", dark=True, className="mb-4 p-3"
+        color="dark",
+        dark=True,
+        className="mb-4",
+        style={"height": "100px"}
     )
 
 
 def create_company_sidebar():
+    """
+    Creates the sidebar for company selection, allowing users to filter by company.
+
+    Returns:
+        dbc.Card: A Bootstrap card containing company selection elements.
+    """
     return dbc.Card([
         dbc.CardHeader(html.H4("Company Selection", className="fw-bold")),
         dbc.CardBody([
@@ -51,6 +69,12 @@ def create_company_sidebar():
 
 
 def create_bar_chart_card():
+    """
+    Creates a card displaying the bar chart for the number of car models by company.
+
+    Returns:
+        dbc.Card: A Bootstrap card containing a Vega-Lite bar chart.
+    """
     return dbc.Card([
         html.Div([
             html.H6("Number of Car Models by Company", className="fw-bold text-center mb-3"),
@@ -60,6 +84,12 @@ def create_bar_chart_card():
 
 
 def create_histogram_card():
+    """
+    Creates a card displaying the histogram for car price distribution.
+
+    Returns:
+        dbc.Card: A Bootstrap card containing a Vega-Lite histogram.
+    """
     return dbc.Card([
         html.Div([
             html.H6("Car Price Distribution", className="fw-bold text-center mb-3"),
@@ -69,6 +99,12 @@ def create_histogram_card():
 
 
 def create_detailed_sidebar():
+    """
+    Creates the detailed analysis sidebar allowing users to filter cars by various attributes.
+
+    Returns:
+        dbc.Card: A Bootstrap card containing dropdowns and sliders for filtering cars.
+    """
     return dbc.Card([
         dbc.CardHeader(html.H4("Detailed Analysis", className="fw-bold")),
         dbc.CardBody([
@@ -95,6 +131,13 @@ def create_detailed_sidebar():
 
 
 def create_scatter_plot_card():
+    """
+    Creates a card displaying the scatter plot for car attributes vs. price.
+    Users can toggle between Horsepower, Performance, and Top Speed.
+
+    Returns:
+        dbc.Card: A Bootstrap card containing a Vega-Lite scatter plot and radio buttons.
+    """
     return dbc.Card([
         html.Div([
             html.H6(id="scatter-plot-title", className="fw-bold text-center mb-3"),
@@ -104,7 +147,7 @@ def create_scatter_plot_card():
                 options=[
                     {"label": " Horsepower", "value": "horsepower"},
                     {"label": " Performance", "value": "performance_0_100_km/h"},
-                    {"label": " Total speed", "value": "total_speed"},
+                    {"label": " Top Speed", "value": "total_speed"},
                 ],
                 value="horsepower",
                 inline=True,
@@ -116,6 +159,12 @@ def create_scatter_plot_card():
 
 
 def create_price_boxplot_card():
+    """
+    Creates the dashboard header with the logo, title, and currency switch buttons.
+
+    Returns:
+        dbc.Navbar: A Bootstrap-styled navbar containing the dashboard title and currency switch.
+    """
     return dbc.Card([
         html.Div([
             html.H6(id="price-boxplot-title", className="fw-bold text-center mb-3"),
@@ -134,6 +183,12 @@ def create_price_boxplot_card():
 
 
 def create_horsepower_boxplot_card():
+    """
+    Creates the dashboard header with the logo, title, and currency switch buttons.
+
+    Returns:
+        dbc.Navbar: A Bootstrap-styled navbar containing the dashboard title and currency switch.
+    """
     return dbc.Card([
         html.Div([
             html.H6(id="horsepower-boxplot-title", className="fw-bold text-center mb-3"),
@@ -152,6 +207,12 @@ def create_horsepower_boxplot_card():
 
 
 def create_footer():
+    """
+    Creates the footer with information about the VDash project and credits.
+
+    Returns:
+        dbc.Container: A footer container with project details and links.
+    """
     return dbc.Container([
         html.Div([
             html.P([
@@ -169,10 +230,16 @@ def create_footer():
 
 
 def create_about_tab():
+    """
+    Creates the dashboard header with the logo, title, and currency switch buttons.
+
+    Returns:
+        dbc.Navbar: A Bootstrap-styled navbar containing the dashboard title and currency switch.
+    """
     return dcc.Tab(label='About', children=[
         dbc.Card([
             dbc.CardBody([
-                html.H3("🚀 Happy car hunting with VDash!", className="fw-bold mb-4"),
+                html.H3("Happy car hunting with VDash!", className="fw-bold mb-4"),
                 html.P(
                     "VDash, an interactive dashboard for car buyers and automotive professionals to compare vehicles! "
                     "Effortlessly compare vehicles based on performance, pricing, and key features with dynamic filters and interactive visuals.",
