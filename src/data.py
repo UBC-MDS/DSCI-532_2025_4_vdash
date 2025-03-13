@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import kagglehub
 import shutil
+import joblib
 
+memory = joblib.Memory("cache", verbose=0)
 
 # Set up directories for data storage
 def setup_directories():
@@ -14,7 +16,8 @@ def setup_directories():
         "raw_dir": "data/raw/",
         "processed_dir": "data/processed/",
         "raw_file": "data/raw/ultimate_cars_dataset_2024.csv",
-        "processed_file": "data/processed/cleaned_cars_df.csv"
+        "processed_file": "data/processed/cleaned_cars_df.csv",
+        "processed_parquet_file": "data/processed/cleaned_cars_df.parquet"
     }
 
 
@@ -120,6 +123,7 @@ def categorize_car_type(row):
 
 
 # Clean and transform the raw car data
+@memory.cache()
 def clean_data(df):
     # Standardize column names
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_", regex=True).str.replace(r"[()\[\]]", "", regex=True)
@@ -182,7 +186,8 @@ def clean_data(df):
     cleaned_df['cc_battery_capacity'] = cleaned_df['cc_battery_capacity'].apply(clean_capacity)
 
     # Remove redundant columns
-    cols_to_drop = ['cars_prices', 'fuel_types', 'battery_capacity_kwh', 'cc_capacity', 'is_electric']
+    cols_to_drop = ['cars_prices', 'fuel_types', 'battery_capacity_kwh', 
+                    'cc_capacity', 'is_electric', 'torque', 'engines']
     cleaned_df = cleaned_df.drop(columns=cols_to_drop)
 
     # Fix company names
@@ -202,23 +207,24 @@ def clean_data(df):
     cleaned_df['car_types'] = cleaned_df['car_types'].str.capitalize()
     cleaned_df['fuel_types_cleaned'] = cleaned_df['fuel_types_cleaned'].str.capitalize()
 
-    # Reorder columns
+    # Reorder and delete unused columns
     reordered_cols = [
-        'company_names', 'cars_names', 'car_types', 'engines', 'fuel_types_cleaned', 'cc_battery_capacity',
-        'horsepower', 'total_speed', 'performance_0_100_km/h', 'seats', 'torque', 'cars_prices_cad', 'cars_prices_usd'
+        'company_names', 'cars_names', 'car_types', 'fuel_types_cleaned', 'cc_battery_capacity',
+        'horsepower', 'total_speed', 'performance_0_100_km/h', 'seats', 'cars_prices_cad', 'cars_prices_usd'
     ]
 
     return cleaned_df[reordered_cols]
 
 
 # Prepare data for the dashboard
+@memory.cache()
 def prepare_data():
     paths = setup_directories()
-
-    # Check if processed data already exists
-    if os.path.exists(paths["processed_file"]):
-        print(f"Loading processed data from {paths['processed_file']}")
-        return pd.read_csv(paths["processed_file"])
+    
+    # Check if processed parquet data already exists
+    if os.path.exists(paths["processed_parquet_file"]):
+        print(f"Loading processed data from {paths['processed_parquet_file']}")
+        return pd.read_parquet(paths["processed_parquet_file"])
 
     # Download and process data
     download_dataset(paths)
@@ -228,9 +234,11 @@ def prepare_data():
     raw_df = pd.read_csv(paths["raw_file"], encoding="ISO-8859-1")
     cleaned_df = clean_data(raw_df)
 
-    # Save processed data
+    # Save processed data in both CSV (for readability) and Parquet (for performance)
     cleaned_df.to_csv(paths["processed_file"], index=False)
-    print(f"Processed data saved to {paths['processed_file']}")
+    cleaned_df.to_parquet(paths["processed_parquet_file"], index=False)
+    print(f"Processed data saved to CSV: {paths['processed_file']}")
+    print(f"Processed data saved to Parquet: {paths['processed_parquet_file']}")
 
     return cleaned_df
 
