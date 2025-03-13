@@ -9,6 +9,16 @@ import plotly.graph_objects as go
 
 # Card: Max total speed & horsepower within selected companies
 def max_speed_horsepower(df):
+    """
+     Computes the maximum total speed and maximum horsepower from the given dataframe.
+    
+    Parameters:
+    df (pd.DataFrame): The dataframe containing 'total_speed' and 'horsepower' columns.
+    
+    Returns:
+    tuple: A tuple containing (max_speed, max_hp), where max_speed is the highest total speed,
+           and max_hp is the highest horsepower in the dataset.
+    """
     if df.empty:
         return None, None
 
@@ -20,6 +30,16 @@ def max_speed_horsepower(df):
 
 # Gauges: Max speed and horsepower gauges
 def create_gauge_cards(max_speed, max_hp):
+    """
+    Creates gauge visualizations for maximum speed and horsepower.
+    
+    Parameters:
+    max_speed (float): The maximum speed value.
+    max_hp (float): The maximum horsepower value.
+    
+    Returns:
+    html.Div: A Dash HTML component containing the gauge visualizations.
+    """
     # Speed gauge
     speed_fig = go.Figure(go.Indicator(
         mode="gauge+number",
@@ -96,6 +116,15 @@ def create_gauge_cards(max_speed, max_hp):
 
 # Bar chart: number of car models in each company
 def plot_bar_chart(df):
+    """
+    Creates a bar chart showing the number of car models per company.
+    
+    Parameters:
+    df (pd.DataFrame): The dataframe containing 'company_names' column.
+    
+    Returns:
+    dict: Altair-generated Vega specification for the bar chart.
+    """
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('count()', title='Number of Car Models'),
         y=alt.Y('company_names:N', title='Company'),
@@ -114,6 +143,17 @@ def plot_bar_chart(df):
 
 # Histogram: car price range histogram for selected company
 def plot_grouped_histogram(df, price_col, currency='CAD'):
+    """
+    Creates a grouped histogram for car price ranges categorized by company.
+    
+    Parameters:
+    df (pd.DataFrame): The dataframe containing 'company_names' and price column.
+    price_col (str): The column name representing car prices.
+    currency (str): The currency format ('CAD' or 'USD'). Defaults to 'CAD'.
+    
+    Returns:
+    dict: Altair-generated Vega specification for the histogram.
+    """
     if currency == 'CAD':
         price_bins = [0, 20000, 30000, 50000, 80000, 100000, float('inf')]
         price_labels = ["0-20K", "20-30K", "30-50K", "50-80K", "80-100K", "100K+"]
@@ -164,6 +204,17 @@ def plot_grouped_histogram(df, price_col, currency='CAD'):
 
 # horsepower_price scatter plot
 def horsepower_price(filtered_df, x_var, price_col):
+    """
+    Creates a scatter plot showing the relationship between horsepower (or other selected variable) and price.
+    
+    Parameters:
+    filtered_df (pd.DataFrame): The dataframe containing car data.
+    x_var (str): The column name representing the x-axis variable (e.g., 'horsepower', 'total_speed').
+    price_col (str): The column name representing the price (e.g., 'cars_prices_cad').
+    
+    Returns:
+    dict: Altair-generated Vega specification for the scatter plot.
+    """
     x_max = filtered_df[x_var].max() * 1.05
     price_max = filtered_df[price_col].max() * 1.05
 
@@ -218,6 +269,19 @@ def horsepower_price(filtered_df, x_var, price_col):
 
 # Boxplot: car price distribution with category selection
 def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
+    """
+    Creates a boxplot for car price distribution based on a selected category.
+    
+    Parameters:
+    df (pd.DataFrame): The dataframe containing car price data.
+    category (str): The column to group data by (e.g., 'company_names', 'fuel_types_cleaned').
+    price_col (str): The column representing car prices.
+    min_price (float, optional): The minimum price filter.
+    max_price (float, optional): The maximum price filter.
+    
+    Returns:
+    dict: Altair-generated Vega specification for the boxplot.
+    """
 
     if df.empty:
         return empty_warning_plot()
@@ -271,6 +335,12 @@ def plot_boxplot_price(df, category="company_names", price_col="cars_prices_cad"
 
 # Empty plot: shows when no data avaliable
 def empty_warning_plot():
+    """
+    Creates an empty plot with a warning message when no data is available.
+    
+    Returns:
+    dict: Altair-generated Vega specification displaying 'No data available'
+    """
     return alt.Chart().mark_text(
         text="No data available",
         fontSize=14,
@@ -281,6 +351,19 @@ def empty_warning_plot():
 
 # Boxplot: Horsepower distribution with category selection
 def plot_boxplot_horsepower(df, category="company_names", price_col="cars_prices_cad", min_price=None, max_price=None):
+    """
+    Creates a boxplot for horsepower distribution based on a selected category.
+    
+    Parameters:
+    df (pd.DataFrame): The dataframe containing horsepower data.
+    category (str): The column to group data by (e.g., 'company_names', 'fuel_types_cleaned').
+    price_col (str): The column representing car prices.
+    min_price (float, optional): The minimum price filter.
+    max_price (float, optional): The maximum price filter.
+    
+    Returns:
+    dict: Altair-generated Vega specification for the boxplot.
+    """
     if df.empty:
         return empty_warning_plot()
 
