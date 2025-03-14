@@ -26,6 +26,7 @@ all_companies = sorted(cars_df['company_names'].unique())
 alt.data_transformers.enable("vegafusion")
 memory = joblib.Memory("cache", verbose=0)
 
+
 # Callback to update currency state
 @callback(
     [Output('currency-cad-btn', 'className'),
@@ -36,21 +37,16 @@ memory = joblib.Memory("cache", verbose=0)
      Input('currency-usd-btn', 'n_clicks')]
 )
 def update_currency_buttons(cad_clicks, usd_clicks):
-    cad_clicks = cad_clicks or 0
-    usd_clicks = usd_clicks or 0
     active_style = {"backgroundColor": "white", "color": "black", "font-weight": "bold"}
     inactive_style = {"backgroundColor": "transparent", "color": "white", "font-weight": "bold"}
 
-    if cad_clicks == 0 and usd_clicks == 0:
+    # Default to CAD if no button has been clicked
+    if not ctx.triggered_id:
         return "active-btn", "inactive-btn", active_style, inactive_style
-
-    if cad_clicks >= usd_clicks and usd_clicks == 0:
+    # Set active button based on which button was most recently clicked
+    if ctx.triggered_id == "currency-cad-btn":
         return "active-btn", "inactive-btn", active_style, inactive_style
-    elif usd_clicks >= cad_clicks and cad_clicks == 0:
-        return "inactive-btn", "active-btn", inactive_style, active_style
-    elif cad_clicks > usd_clicks:
-        return "active-btn", "inactive-btn", active_style, inactive_style
-    else:
+    else:  # "currency-usd-btn" was clicked
         return "inactive-btn", "active-btn", inactive_style, active_style
 
 
@@ -92,9 +88,13 @@ def sync_price_slider(min_input, max_input):
 )
 def update_price_components(cad_class, usd_class):
     if cad_class == "active-btn":
-        return min_price_cad, max_price_cad, min_price_cad, max_price_cad, [min_price_cad, max_price_cad], min_price_cad, max_price_cad, min_price_cad, max_price_cad
+        return (min_price_cad, max_price_cad, min_price_cad, max_price_cad,
+                [min_price_cad, max_price_cad], min_price_cad, max_price_cad,
+                min_price_cad, max_price_cad)
     else:
-        return min_price_usd, max_price_usd, min_price_usd, max_price_usd, [min_price_usd, max_price_usd], min_price_usd, max_price_usd, min_price_usd, max_price_usd
+        return (min_price_usd, max_price_usd, min_price_usd, max_price_usd,
+                [min_price_usd, max_price_usd], min_price_usd, max_price_usd,
+                min_price_usd, max_price_usd)
 
 
 @callback(
