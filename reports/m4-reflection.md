@@ -9,6 +9,7 @@ The recent development efforts have been focused on:
 - Added a favicon and tab title to the dashboard, and adjusted the icon position in the header to better align with the original sketch.
 - Updated currency switch logic to use `ctx` instead of number of clicks, making it more reliable and responsive after multiple clicks.
 - UI and Labeling Updates:  Updated Total Speed to Top Speed (km/h) across all instances in the UI, including tooltips and charts.
+- Developed tests for data processing functions and visualization output functions.
 
 ## Differences from Proposal/Sketch
 
@@ -35,4 +36,5 @@ The recent development efforts have been focused on:
 - Added detailed docstrings for all charting functions within the dashboard.  
 - Documented parameters and return values for all chart-related functions to improve readability and ease of future modifications.  
 - These updates ensure better maintainability and understanding of the charting logic for developers.  
-
+- Test cases for data processing functions: extract_min_value, clean_capacity, categorize_car_type.
+- Test cases for visualization output functions: max_speed_horsepower, empty data handling in visualization components, and schema verification for boxplots and histograms.
