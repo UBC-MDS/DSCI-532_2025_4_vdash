@@ -10,6 +10,7 @@ The recent development efforts have been focused on:
 - Updated currency switch logic to use `ctx` instead of number of clicks, making it more reliable and responsive after multiple clicks.
 - UI and Labeling Updates:  Updated Total Speed to Top Speed (km/h) across all instances in the UI, including tooltips and charts.
 - Developed tests for data processing functions and visualization output functions.
+- Reduced latency and improving efficiency by caching and vectorizing operations.
 
 ## Differences from Proposal/Sketch
 
@@ -26,10 +27,12 @@ The recent development efforts have been focused on:
 ## Overall Dashboard Reflection
 
 - **Strengths**:
-  - ...
+  - Well-structured and interactive UI that presents data effectively
+	- Good balance of information density and clarity without overwhelming the user.
+	- Efficient filtering and visualization updates for better exploration.
 
 - **Limitations and Future Improvements**:
-  - ...
+  - Further optimize the layout to adapt better to mobile and tablet screens.
 
 ## (Challenging) Set Up Tests and Write Docstrings
 
